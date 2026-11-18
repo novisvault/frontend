@@ -1,0 +1,243 @@
+<div class="space-y-6">
+  <!-- Desktop Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+        Account & Security Settings
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+        Manage your verified client profile credentials, multi-factor keys, and security PIN.
+      </p>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage" class="p-4 rounded-2xl bg-green-50 dark:bg-green-950/40 border border-green-200 text-green-700 dark:text-green-300 text-xs font-bold flex items-center space-x-2">
+    <i class="fa-solid fa-circle-check text-base"></i>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 text-red-700 dark:text-red-300 text-xs font-bold flex items-center space-x-2">
+    <i class="fa-solid fa-circle-exclamation text-base"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Left Column - Profile Card (Col 4) -->
+    <div class="lg:col-span-4 space-y-4">
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+        <!-- Profile Header with Gradient -->
+        <div class="relative bg-gradient-to-br from-primary-500 to-primary-600 p-6 text-center text-white">
+          <div class="relative inline-block mb-3">
+            <div class="h-20 w-20 rounded-2xl border-4 border-white/40 overflow-hidden bg-white shadow-xl flex items-center justify-center text-primary-600 text-2xl font-black">
+              {{ getUserInitials() }}
+            </div>
+            <button (click)="showPhotoModal = true" class="absolute -bottom-1 -right-1 h-7 w-7 rounded-xl bg-white shadow-md flex items-center justify-center hover:bg-gray-100 transition-colors text-primary-600" title="Upload Photo">
+              <i class="fa-solid fa-camera text-xs"></i>
+            </button>
+          </div>
+
+          <h2 class="text-base font-bold text-white">{{ user?.name || 'Authorized Client' }}</h2>
+          <p class="text-white/80 text-xs font-mono mt-0.5">Account #{{ user?.account_number }}</p>
+          <div class="mt-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xxs font-bold bg-white/20 text-white">
+            <i class="fa-solid fa-shield-check mr-1.5 text-xs"></i>
+            {{ user?.account_verify || 'Verified Client' }}
+          </div>
+        </div>
+
+        <!-- Tab Navigation Menu matching original profile.blade.php -->
+        <div class="p-4 space-y-1.5">
+          <button (click)="activeTab = 'info'" [class.bg-primary-50]="activeTab === 'info'" [class.dark:bg-primary-950/40]="activeTab === 'info'" [class.text-primary-600]="activeTab === 'info'" [class.dark:text-primary-300]="activeTab === 'info'" class="w-full flex items-center px-4 py-3 rounded-2xl text-xs font-bold transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            <i class="fa-solid fa-user text-xs mr-3"></i>
+            <span>Profile Information</span>
+          </button>
+
+          <button (click)="activeTab = 'password'" [class.bg-primary-50]="activeTab === 'password'" [class.dark:bg-primary-950/40]="activeTab === 'password'" [class.text-primary-600]="activeTab === 'password'" [class.dark:text-primary-300]="activeTab === 'password'" class="w-full flex items-center px-4 py-3 rounded-2xl text-xs font-bold transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            <i class="fa-solid fa-key text-xs mr-3"></i>
+            <span>Password Settings</span>
+          </button>
+
+          <button (click)="activeTab = 'twofa'" [class.bg-primary-50]="activeTab === 'twofa'" [class.dark:bg-primary-950/40]="activeTab === 'twofa'" [class.text-primary-600]="activeTab === 'twofa'" [class.dark:text-primary-300]="activeTab === 'twofa'" class="w-full flex items-center px-4 py-3 rounded-2xl text-xs font-bold transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            <i class="fa-solid fa-shield text-xs mr-3"></i>
+            <span>Two-Factor Authentication</span>
+            <span *ngIf="twoFactorEnabled" class="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xxs font-bold bg-green-100 text-green-700">
+              Active
+            </span>
+          </button>
+
+          <button (click)="activeTab = 'pin'" [class.bg-primary-50]="activeTab === 'pin'" [class.dark:bg-primary-950/40]="activeTab === 'pin'" [class.text-primary-600]="activeTab === 'pin'" [class.dark:text-primary-300]="activeTab === 'pin'" class="w-full flex items-center px-4 py-3 rounded-2xl text-xs font-bold transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            <i class="fa-solid fa-credit-card text-xs mr-3"></i>
+            <span>Transaction Security PIN</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column - Active Tab Details (Col 8) -->
+    <div class="lg:col-span-8">
+      <!-- TAB 1: Profile Information -->
+      <div *ngIf="activeTab === 'info'" class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-lg border border-gray-200/50 dark:border-gray-700/50 space-y-6">
+        <h3 class="text-base font-bold text-gray-900 dark:text-white flex items-center">
+          <i class="fa-solid fa-address-card text-primary-500 mr-2"></i>
+          Verified Profile Details
+        </h3>
+
+        <form (ngSubmit)="updateProfile()" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Legal Full Name</label>
+              <input type="text" [(ngModel)]="name" name="name" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required>
+            </div>
+
+            <div>
+              <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Email Address</label>
+              <input type="email" [value]="user?.email" disabled class="w-full px-4 py-2.5 bg-gray-100 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-500 dark:text-gray-400 cursor-not-allowed">
+            </div>
+
+            <div>
+              <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Phone Contact</label>
+              <input type="tel" [(ngModel)]="phone" name="phone" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            </div>
+
+            <div>
+              <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Date of Birth</label>
+              <input type="date" [(ngModel)]="dob" name="dob" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            </div>
+
+            <div>
+              <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Jurisdiction / Country</label>
+              <input type="text" [(ngModel)]="country" name="country" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            </div>
+
+            <div>
+              <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Primary Residence Address</label>
+              <input type="text" [(ngModel)]="address" name="address" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button type="submit" [disabled]="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 text-white text-xs font-bold shadow-md shadow-primary-500/20 flex items-center">
+              <i *ngIf="loading" class="fa-solid fa-spinner fa-spin mr-2"></i>
+              <span>Save Profile Changes</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 2: Password Settings -->
+      <div *ngIf="activeTab === 'password'" class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-lg border border-gray-200/50 dark:border-gray-700/50 space-y-6">
+        <h3 class="text-base font-bold text-gray-900 dark:text-white flex items-center">
+          <i class="fa-solid fa-lock text-primary-500 mr-2"></i>
+          Update Authentication Password
+        </h3>
+
+        <form (ngSubmit)="updatePassword()" class="space-y-4 max-w-lg">
+          <div>
+            <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Current Password <span class="text-red-500">*</span></label>
+            <input type="password" [(ngModel)]="current_password" name="current_password" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required>
+          </div>
+
+          <div>
+            <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">New Password <span class="text-red-500">*</span></label>
+            <input type="password" [(ngModel)]="new_password" name="new_password" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required>
+          </div>
+
+          <div>
+            <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Confirm New Password <span class="text-red-500">*</span></label>
+            <input type="password" [(ngModel)]="confirm_password" name="confirm_password" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required>
+          </div>
+
+          <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button type="submit" [disabled]="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 text-white text-xs font-bold shadow-md shadow-primary-500/20 flex items-center">
+              <i *ngIf="loading" class="fa-solid fa-spinner fa-spin mr-2"></i>
+              <span>Update Password</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 3: Two-Factor Authentication -->
+      <div *ngIf="activeTab === 'twofa'" class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-lg border border-gray-200/50 dark:border-gray-700/50 space-y-6">
+        <h3 class="text-base font-bold text-gray-900 dark:text-white flex items-center">
+          <i class="fa-solid fa-shield-halved text-primary-500 mr-2"></i>
+          Two-Factor Authentication (2FA)
+        </h3>
+
+        <div class="p-5 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-200/50 dark:border-gray-700/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <h4 class="text-sm font-bold text-gray-900 dark:text-white">
+              Status: <span [class.text-green-600]="twoFactorEnabled" [class.text-gray-400]="!twoFactorEnabled">{{ twoFactorEnabled ? 'Active & Enforced' : 'Disabled' }}</span>
+            </h4>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-md">
+              When 2FA is active, an encrypted one-time verification challenge is required whenever you sign in or execute transactions.
+            </p>
+          </div>
+
+          <button (click)="toggleTwoFactor()" [disabled]="loading" class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm" [ngClass]="twoFactorEnabled ? 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100' : 'bg-primary-600 text-white hover:bg-primary-700'">
+            {{ twoFactorEnabled ? 'Disable 2FA' : 'Enable 2FA Protection' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 4: Transaction Security PIN -->
+      <div *ngIf="activeTab === 'pin'" class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-lg border border-gray-200/50 dark:border-gray-700/50 space-y-6">
+        <h3 class="text-base font-bold text-gray-900 dark:text-white flex items-center">
+          <i class="fa-solid fa-key-skeleton text-primary-500 mr-2"></i>
+          4-Digit Transaction Security PIN
+        </h3>
+
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          This 4-digit numeric PIN is strictly required to authorize outflows, wires, and debit card issuances.
+        </p>
+
+        <form (ngSubmit)="updatePin()" class="space-y-4 max-w-sm">
+          <div>
+            <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Current Security PIN</label>
+            <input type="password" [(ngModel)]="current_pin" name="current_pin" maxlength="4" placeholder="••••" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-center text-lg font-mono tracking-widest text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" style="letter-spacing: 0.5em;">
+          </div>
+
+          <div>
+            <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">New 4-Digit PIN <span class="text-red-500">*</span></label>
+            <input type="password" [(ngModel)]="new_pin" name="new_pin" maxlength="4" placeholder="••••" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-center text-lg font-mono tracking-widest text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required style="letter-spacing: 0.5em;">
+          </div>
+
+          <div>
+            <label class="block text-xxs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Confirm New PIN <span class="text-red-500">*</span></label>
+            <input type="password" [(ngModel)]="confirm_pin" name="confirm_pin" maxlength="4" placeholder="••••" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-center text-lg font-mono tracking-widest text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required style="letter-spacing: 0.5em;">
+          </div>
+
+          <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+            <button type="submit" [disabled]="loading" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 text-white text-xs font-bold shadow-md shadow-primary-500/20 flex items-center">
+              <i *ngIf="loading" class="fa-solid fa-spinner fa-spin mr-2"></i>
+              <span>Save Security PIN</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PHOTO MODAL ================= -->
+<div *ngIf="showPhotoModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 text-center space-y-4">
+    <div class="w-12 h-12 rounded-2xl bg-primary-100 dark:bg-primary-900/40 text-primary-600 mx-auto flex items-center justify-center">
+      <i class="fa-solid fa-camera text-xl"></i>
+    </div>
+    <h3 class="text-base font-bold text-gray-900 dark:text-white">Update Profile Photo</h3>
+    <p class="text-xs text-gray-500 dark:text-gray-400">
+      Select a clear JPEG or PNG portrait for biometric identification.
+    </p>
+
+    <input type="file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100">
+
+    <div class="flex items-center justify-center space-x-2 pt-3">
+      <button (click)="showPhotoModal = false" class="px-4 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-700">
+        Cancel
+      </button>
+      <button (click)="showPhotoModal = false" class="px-5 py-2 rounded-xl bg-primary-600 text-white text-xs font-bold shadow-md shadow-primary-500/20">
+        Upload Photo
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,433 @@
+<!-- Header Section -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div class="flex items-center space-x-3">
+    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary-600 to-primary-400 text-white flex items-center justify-center shadow-lg shadow-primary-500/30">
+      <i class="fa-solid fa-paper-plane text-xl"></i>
+    </div>
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+        Funds Transfer & Wire Clearance
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+        Execute domestic ACH, global SWIFT wire, and instant peer-to-peer settlements.
+      </p>
+    </div>
+  </div>
+
+  <div class="flex items-center space-x-3">
+    <div class="px-3.5 py-1.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm text-right">
+      <span class="text-xxs uppercase tracking-wider text-gray-400 block">Available Balance</span>
+      <span class="text-sm font-bold font-mono text-primary-600 dark:text-primary-400">
+        ${{ getUserBalance() | number:'1.2-2' }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SUCCESS RECEIPT VIEW ================= -->
+<div *ngIf="isCompleted && receiptData" class="max-w-2xl mx-auto animate-fadeIn">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-10 shadow-2xl border border-gray-100 dark:border-gray-700 text-center relative overflow-hidden">
+    <!-- Top Decorative Gradient -->
+    <div class="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-green-400 via-primary-500 to-emerald-500"></div>
+
+    <div class="w-16 h-16 rounded-3xl bg-green-500/10 text-green-500 mx-auto flex items-center justify-center mb-4">
+      <i class="fa-solid fa-check text-2xl"></i>
+    </div>
+
+    <span class="text-xxs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300">
+      Transaction Completed & Cleared
+    </span>
+    <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white mt-2 mb-1">
+      Wire Transfer Dispatched
+    </h3>
+    <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">
+      Funds have been routed through BankProX automated cryptographic clearing protocol.
+    </p>
+
+    <!-- Receipt Details Table -->
+    <div class="bg-gray-50 dark:bg-gray-900/60 rounded-2xl p-5 text-left border border-gray-100 dark:border-gray-700/60 space-y-3 mb-6">
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500 dark:text-gray-400">Transaction Reference ID</span>
+        <span class="font-mono font-bold text-gray-900 dark:text-white">{{ receiptData.txn_id }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500 dark:text-gray-400">Settled Transfer Amount</span>
+        <span class="font-bold text-primary-600 dark:text-primary-400 text-sm">${{ receiptData.amount | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500 dark:text-gray-400">Processing & Clearance Fee</span>
+        <span class="font-bold text-gray-700 dark:text-gray-300">${{ (receiptData.charges || getTransferFee()) | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500 dark:text-gray-400">Recipient Legal Name</span>
+        <span class="font-bold text-gray-900 dark:text-white">{{ receiptData.account_name || accountName }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500 dark:text-gray-400">Destination Account / IBAN</span>
+        <span class="font-mono font-bold text-gray-900 dark:text-white">{{ receiptData.recipient_account || accountNumber }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500 dark:text-gray-400">Wire Channel</span>
+        <span class="font-bold text-gray-900 dark:text-white">{{ receiptData.transfer_type || transferType }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs pt-2 border-t border-gray-200 dark:border-gray-800">
+        <span class="text-gray-500 dark:text-gray-400">Cleared Date & Timestamp</span>
+        <span class="text-gray-700 dark:text-gray-300">{{ receiptData.date | date:'medium' }}</span>
+      </div>
+    </div>
+
+    <!-- Receipt Action Buttons -->
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <button (click)="printReceipt()" class="w-full sm:w-auto px-6 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 text-xs font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center justify-center">
+        <i class="fa-solid fa-print mr-2 text-primary-500"></i> Print Official Receipt
+      </button>
+      <button (click)="resetForm()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-bold shadow-lg shadow-primary-500/25 hover:from-primary-600 transition-all flex items-center justify-center">
+        <i class="fa-solid fa-redo mr-2"></i> Initiate Another Transfer
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MAIN TRANSFER FORM ================= -->
+<div *ngIf="!isCompleted" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Left 2 Cols: Transfer Form -->
+  <div class="lg:col-span-2 space-y-6">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <!-- Transfer Channel Tabs -->
+      <div class="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-gray-100 dark:bg-gray-900/60 mb-6">
+        <button (click)="transferType = 'Domestic'" [class.bg-white]="transferType === 'Domestic'" [class.dark:bg-gray-800]="transferType === 'Domestic'" [class.text-primary-600]="transferType === 'Domestic'" [class.shadow-sm]="transferType === 'Domestic'" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center justify-center space-x-1.5">
+          <i class="fa-solid fa-university text-xs"></i>
+          <span>Domestic Wire</span>
+        </button>
+        <button (click)="transferType = 'International'" [class.bg-white]="transferType === 'International'" [class.dark:bg-gray-800]="transferType === 'International'" [class.text-primary-600]="transferType === 'International'" [class.shadow-sm]="transferType === 'International'" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center justify-center space-x-1.5">
+          <i class="fa-solid fa-globe text-xs"></i>
+          <span>International SWIFT</span>
+        </button>
+        <button (click)="transferType = 'Internal'" [class.bg-white]="transferType === 'Internal'" [class.dark:bg-gray-800]="transferType === 'Internal'" [class.text-primary-600]="transferType === 'Internal'" [class.shadow-sm]="transferType === 'Internal'" class="py-2.5 px-3 rounded-xl text-xs font-bold transition-all text-gray-500 hover:text-gray-900 dark:hover:text-white flex items-center justify-center space-x-1.5">
+          <i class="fa-solid fa-user-friends text-xs"></i>
+          <span>P2P Bank</span>
+        </button>
+      </div>
+
+      <!-- Error Alert Message -->
+      <div *ngIf="errorMessage" class="mb-5 p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 text-xs font-semibold flex items-center space-x-3">
+        <i class="fa-solid fa-circle-exclamation text-base shrink-0"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Transfer Form -->
+      <form (ngSubmit)="openPreview()" class="space-y-5">
+        <!-- Transfer Amount Input -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Transfer Amount ($ USD) <span class="text-red-500">*</span>
+          </label>
+          <div class="relative rounded-2xl shadow-sm">
+            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-bold text-lg">
+              $
+            </div>
+            <input type="number" [(ngModel)]="amount" name="amount" min="1" step="0.01" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 pl-10 pr-4 py-3.5 text-xl font-extrabold text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500" placeholder="0.00" required>
+          </div>
+
+          <!-- Quick Amount Buttons matching Laravel localtransfer.blade.php lines 453-463 -->
+          <div class="flex items-center space-x-2 mt-2">
+            <span class="text-xxs font-bold text-gray-400 uppercase">Quick:</span>
+            <button type="button" (click)="setQuickAmount(100)" class="px-2.5 py-1 rounded-lg text-xxs font-bold bg-gray-100 dark:bg-gray-700 hover:bg-primary-100 dark:hover:bg-primary-950 text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors">
+              $100
+            </button>
+            <button type="button" (click)="setQuickAmount(500)" class="px-2.5 py-1 rounded-lg text-xxs font-bold bg-gray-100 dark:bg-gray-700 hover:bg-primary-100 dark:hover:bg-primary-950 text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors">
+              $500
+            </button>
+            <button type="button" (click)="setQuickAmount(1000)" class="px-2.5 py-1 rounded-lg text-xxs font-bold bg-gray-100 dark:bg-gray-700 hover:bg-primary-100 dark:hover:bg-primary-950 text-gray-700 dark:text-gray-300 hover:text-primary-600 transition-colors">
+              $1,000
+            </button>
+            <button type="button" (click)="setAllAmount()" class="px-2.5 py-1 rounded-lg text-xxs font-bold bg-primary-600 text-white hover:bg-primary-700 transition-colors shadow-sm">
+              All Available
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between text-xxs text-gray-400 mt-2">
+            <span>Minimum transfer: $10.00</span>
+            <span>Transfer fee: 0.50% (Complimentary for internal P2P)</span>
+          </div>
+        </div>
+
+        <!-- Recipient Information -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              Recipient Account / IBAN <span class="text-red-500">*</span>
+            </label>
+            <input type="text" [(ngModel)]="accountNumber" name="accountNumber" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 px-4 py-3 text-sm font-mono text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500" placeholder="e.g. 1099238472 or GB29..." required>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              Recipient Legal Name <span class="text-red-500">*</span>
+            </label>
+            <input type="text" [(ngModel)]="accountName" name="accountName" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 px-4 py-3 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500" placeholder="Beneficiary Full Legal Name" required>
+          </div>
+        </div>
+
+        <!-- Destination Bank Details & Account Type -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              Destination Financial Institution
+            </label>
+            <input type="text" [(ngModel)]="bankName" name="bankName" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 px-4 py-3 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500" placeholder="e.g. JPMorgan Chase, Barclays Bank">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              Destination Account Classification
+            </label>
+            <select [(ngModel)]="accountType" name="accountType" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 px-4 py-3 text-sm text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500">
+              <option *ngFor="let t of accountTypes" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div *ngIf="transferType !== 'Internal'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              {{ transferType === 'International' ? 'SWIFT / BIC Identifier' : 'Routing / Transit Number' }}
+            </label>
+            <input type="text" [(ngModel)]="swiftCode" name="swiftCode" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 px-4 py-3 text-sm font-mono text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500" placeholder="{{ transferType === 'International' ? 'e.g. CHASUS33' : 'e.g. 021000021' }}">
+          </div>
+        </div>
+
+        <!-- Transfer Memo / Description -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Transfer Purpose / Settlement Memo
+          </label>
+          <input type="text" [(ngModel)]="notes" name="notes" placeholder="e.g. Invoice settlement, family remittance, investment funds..." class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 px-4 py-3 text-xs text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500">
+        </div>
+
+        <!-- 4-Digit Security Authorization PIN -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            4-Digit Security Authorization PIN <span class="text-red-500">*</span>
+          </label>
+          <div class="relative max-w-xs">
+            <input type="password" [(ngModel)]="pin" name="pin" maxlength="4" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50 px-4 py-3 text-center text-xl font-mono tracking-widest text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500" placeholder="••••" required style="letter-spacing: 0.6em;">
+          </div>
+          <p class="text-xxs text-gray-400 mt-1">
+            Private 4-digit code required to authorize debit execution.
+          </p>
+        </div>
+
+        <!-- Real-Time Fee & Total Calculation Summary Box -->
+        <div class="p-5 rounded-2xl bg-gradient-to-br from-gray-50 to-blue-50/40 dark:from-gray-900 dark:to-gray-800 border border-gray-200/60 dark:border-gray-700/60 space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-gray-500 dark:text-gray-400">Transfer Principal</span>
+            <span class="font-bold text-gray-900 dark:text-white">${{ (amount || 0) | number:'1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-gray-500 dark:text-gray-400">Wire Clearance Fee</span>
+            <span class="font-bold text-gray-900 dark:text-white">${{ getTransferFee() | number:'1.2-2' }}</span>
+          </div>
+          <div class="pt-2 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <span class="text-xs font-bold text-gray-900 dark:text-white">Total Outflow</span>
+            <span class="text-base font-extrabold text-primary-600 dark:text-primary-400">
+              ${{ getTotalAmount() | number:'1.2-2' }}
+            </span>
+          </div>
+          <div class="flex justify-between items-center text-xxs text-gray-500 pt-1">
+            <span>Remaining Account Balance:</span>
+            <span class="font-bold font-mono">${{ getRemainingBalance() | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <!-- Submit Preview Button -->
+        <button type="submit" [disabled]="loading || !amount || !accountNumber || !pin" class="w-full py-4 rounded-2xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold text-sm shadow-xl shadow-primary-500/25 hover:from-primary-600 hover:to-primary-700 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-eye text-xs"></i>
+          <span>Preview Transfer & Confirm</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Security & Fraud Protection Callout -->
+    <div class="p-5 rounded-3xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700/60 shadow-sm flex items-start space-x-4">
+      <div class="w-10 h-10 rounded-2xl bg-green-500/10 text-green-500 flex items-center justify-center shrink-0">
+        <i class="fa-solid fa-shield-halved text-lg"></i>
+      </div>
+      <div>
+        <h4 class="text-sm font-bold text-gray-900 dark:text-white">Federal Regulation & Cryptographic Safeguards</h4>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+          Every wire transfer dispatched through the BankProX portal is validated against Office of Foreign Assets Control (OFAC) screening and secured by multi-factor cryptographic key authorization.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right 1 Col: Saved Beneficiaries Sidebar -->
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+          Saved Beneficiaries
+        </h3>
+        <span class="text-xxs font-bold px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-950 text-primary-600">
+          {{ beneficiaries.length }} Active
+        </span>
+      </div>
+
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
+        Click any verified recipient to auto-fill transfer parameters.
+      </p>
+
+      <div class="space-y-2.5">
+        <div *ngFor="let b of beneficiaries" (click)="selectBeneficiary(b)" class="p-3 rounded-2xl border border-gray-100 dark:border-gray-700/60 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-primary-50/30 dark:hover:bg-primary-950/20 transition-all cursor-pointer flex items-center space-x-3 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-500 to-primary-700 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
+            {{ b.initials || 'BN' }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-bold text-gray-900 dark:text-white truncate group-hover:text-primary-600 transition-colors">
+              {{ b.name }}
+            </p>
+            <p class="text-xxs font-mono text-gray-400 truncate">
+              {{ b.account_number }} ({{ b.bank_name || 'Bank' }})
+            </p>
+          </div>
+          <i class="fa-solid fa-chevron-right text-gray-300 group-hover:text-primary-500 text-xs transition-colors"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PREVIEW CONFIRMATION MODAL ================= -->
+<div *ngIf="isPreviewOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/75 backdrop-blur-sm animate-fadeIn">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-700 relative">
+    <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700 mb-6">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-950 text-primary-600 dark:text-primary-400 flex items-center justify-center">
+          <i class="fas fa-file-check text-base"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Confirm Wire Dispatch</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Review transfer payload before final authorization</p>
+        </div>
+      </div>
+      <button (click)="closePreview()" class="p-2 text-gray-400 hover:text-gray-600 rounded-lg">
+        <i class="fas fa-times text-lg"></i>
+      </button>
+    </div>
+
+    <div class="space-y-3 bg-gray-50 dark:bg-gray-900/60 p-4 rounded-2xl mb-6">
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500">Principal Amount:</span>
+        <span class="font-extrabold text-base text-primary-600 dark:text-primary-400">${{ amount | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500">Processing Fee:</span>
+        <span class="font-bold text-gray-800 dark:text-gray-200">${{ getTransferFee() | number:'1.2-2' }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500">Beneficiary:</span>
+        <span class="font-bold text-gray-800 dark:text-gray-200">{{ accountName }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500">Destination Account:</span>
+        <span class="font-mono font-bold text-gray-800 dark:text-gray-200">{{ accountNumber }}</span>
+      </div>
+      <div class="flex justify-between items-center text-xs">
+        <span class="text-gray-500">Destination Bank:</span>
+        <span class="font-bold text-gray-800 dark:text-gray-200">{{ bankName || 'BankProX Institutional Network' }}</span>
+      </div>
+      <div class="pt-2 border-t border-gray-200 dark:border-gray-800 flex justify-between items-center text-xs">
+        <span class="font-bold text-gray-900 dark:text-white">Total Outflow Debit:</span>
+        <span class="font-extrabold text-lg text-gray-900 dark:text-white">${{ getTotalAmount() | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-xs mb-6 flex items-start space-x-2">
+      <i class="fa-solid fa-triangle-exclamation text-sm shrink-0 mt-0.5"></i>
+      <span>Once dispatched, electronic wire transfers are processed irreversibly through SWIFT/Federal Reserve corridors.</span>
+    </div>
+
+    <div class="flex items-center justify-end space-x-3">
+      <button (click)="closePreview()" class="px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold hover:bg-gray-50">
+        Cancel
+      </button>
+      <button (click)="confirmAndProcess()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-bold shadow-lg shadow-primary-500/25 hover:from-primary-600 transition-all flex items-center space-x-2">
+        <i class="fa-solid fa-shield-check"></i>
+        <span>Execute Wire</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 3D PROCESSING MODAL ================= -->
+<div *ngIf="isProcessing" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-md animate-fadeIn">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-8 shadow-2xl text-center border border-gray-100 dark:border-gray-700">
+    <!-- Animated 3D Bank Card Representation -->
+    <div class="w-48 h-28 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-primary-600 to-primary-400 p-4 text-white shadow-xl relative overflow-hidden transform hover:rotate-3 transition-transform animate-pulse">
+      <div class="flex justify-between items-center mb-3">
+        <div class="w-6 h-4 bg-yellow-300 rounded-sm"></div>
+        <i class="fab fa-cc-visa text-lg"></i>
+      </div>
+      <p class="font-mono text-xs tracking-wider">•••• •••• •••• 1019</p>
+      <p class="text-xxs text-white/70 mt-2 uppercase">{{ accountName }}</p>
+    </div>
+
+    <h3 class="text-xl font-extrabold text-gray-900 dark:text-white mb-1">
+      Processing Wire Clearance...
+    </h3>
+    <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">
+      Validating TLS handshake and routing through clearing corridor.
+    </p>
+
+    <!-- Progress Bar -->
+    <div class="w-full bg-gray-100 dark:bg-gray-700 h-2.5 rounded-full overflow-hidden mb-2">
+      <div class="bg-gradient-to-r from-primary-500 to-primary-600 h-full rounded-full transition-all duration-300 ease-out" [style.width.%]="progressPercent"></div>
+    </div>
+    <span class="text-xxs font-bold text-gray-400">{{ progressPercent }}% Complete</span>
+  </div>
+</div>
+
+<!-- ================= MULTI-STAGE SECURITY VERIFICATION MODAL ================= -->
+<div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/85 backdrop-blur-md animate-fadeIn">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-700 text-center relative">
+    <!-- Step Indicator Badges -->
+    <div class="flex items-center justify-center space-x-1.5 mb-6">
+      <span *ngFor="let s of verificationSteps; let i = index" class="px-2.5 py-1 rounded-full text-xxs font-bold transition-all" [class.bg-primary-500]="i === currentStepIndex" [class.text-white]="i === currentStepIndex" [class.bg-green-500]="i < currentStepIndex" [class.text-white]="i < currentStepIndex" [class.bg-gray-100]="i > currentStepIndex" [class.dark:bg-gray-700]="i > currentStepIndex" [class.text-gray-400]="i > currentStepIndex">
+        {{ i < currentStepIndex ? '✓' : 'Step ' + (i + 1) }}
+      </span>
+    </div>
+
+    <div *ngIf="verificationSteps[currentStepIndex] as step">
+      <div class="w-16 h-16 rounded-3xl bg-amber-500/10 text-amber-500 mx-auto flex items-center justify-center mb-4">
+        <i class="fa-solid fa-key text-2xl"></i>
+      </div>
+
+      <h3 class="text-xl font-extrabold text-gray-900 dark:text-white mb-1">
+        {{ step.title }}
+      </h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">
+        {{ step.prompt }}
+      </p>
+
+      <div *ngIf="modalError" class="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-xs font-semibold">
+        <i class="fa-solid fa-circle-exclamation mr-1"></i> {{ modalError }}
+      </div>
+
+      <div class="mb-6">
+        <input type="text" [(ngModel)]="currentCodeInput" (keyup.enter)="verifyCurrentStep()" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3.5 text-center text-lg font-mono font-bold tracking-wider text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500" placeholder="Enter authorization code" autofocus autocomplete="off">
+      </div>
+
+      <div class="flex items-center justify-between gap-3">
+        <button (click)="isModalOpen = false" class="flex-1 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold hover:bg-gray-50">
+          Cancel
+        </button>
+        <button (click)="verifyCurrentStep()" [disabled]="modalLoading || !currentCodeInput" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-bold shadow-lg shadow-primary-500/25 hover:from-primary-600 transition-all disabled:opacity-50 flex items-center justify-center space-x-1">
+          <span *ngIf="modalLoading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-1"></span>
+          <span>Validate & Continue</span>
+          <i *ngIf="!modalLoading" class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

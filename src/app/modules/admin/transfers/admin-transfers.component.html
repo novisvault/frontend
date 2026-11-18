@@ -1,0 +1,95 @@
+<!-- Header -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+      Manage Client Outflows & Transfers
+    </h1>
+    <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+      Review and authorize outgoing wire settlements, ACH disbursements, and cross-border remittances.
+    </p>
+  </div>
+
+  <div class="flex items-center space-x-2">
+    <button (click)="filterStatus = 'ALL'" [class.bg-blue-600]="filterStatus === 'ALL'" class="px-3 py-1.5 rounded-xl bg-slate-800 text-xs font-bold text-white transition-colors">
+      All
+    </button>
+    <button (click)="filterStatus = 'Pending'" [class.bg-amber-600]="filterStatus === 'Pending'" class="px-3 py-1.5 rounded-xl bg-slate-800 text-xs font-bold text-white transition-colors">
+      Pending
+    </button>
+    <button (click)="filterStatus = 'Processed'" [class.bg-emerald-600]="filterStatus === 'Processed'" class="px-3 py-1.5 rounded-xl bg-slate-800 text-xs font-bold text-white transition-colors">
+      Processed
+    </button>
+    <button (click)="filterStatus = 'Rejected'" [class.bg-red-600]="filterStatus === 'Rejected'" class="px-3 py-1.5 rounded-xl bg-slate-800 text-xs font-bold text-white transition-colors">
+      Rejected
+    </button>
+  </div>
+</div>
+
+<div *ngIf="message" class="mb-4 p-3.5 rounded-2xl bg-emerald-950 border border-emerald-800 text-emerald-300 text-xs font-bold">
+  <i class="fa fa-check-circle mr-2"></i> {{ message }}
+</div>
+
+<!-- Table Matching mwithdrawals.blade.php -->
+<div class="bg-slate-900/90 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-xs">
+      <thead class="bg-slate-950/80 text-slate-400 font-bold uppercase tracking-wider text-xxs border-b border-slate-800">
+        <tr>
+          <th class="py-4 px-5">ID</th>
+          <th class="py-4 px-5">Account Holder</th>
+          <th class="py-4 px-5">Amount</th>
+          <th class="py-4 px-5">Description</th>
+          <th class="py-4 px-5">Channel / Type</th>
+          <th class="py-4 px-5">Beneficiary / Bank</th>
+          <th class="py-4 px-5">Status</th>
+          <th class="py-4 px-5">Date Created</th>
+          <th class="py-4 px-5 text-right">Option</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800 text-slate-300">
+        <tr *ngFor="let t of filteredTransfers()" class="hover:bg-slate-800/40 transition-colors">
+          <td class="py-4 px-5 font-mono text-slate-500">#{{ t.id }}</td>
+          <td class="py-4 px-5">
+            <span class="font-bold text-white block">{{ t.user_name || 'Client' }}</span>
+            <span class="text-xxs text-slate-500">{{ t.user_email }}</span>
+          </td>
+          <td class="py-4 px-5 font-mono font-bold text-rose-400 text-sm">
+            ${{ t.amount | number:'1.2-2' }}
+          </td>
+          <td class="py-4 px-5 text-slate-300 text-xs">{{ t.Description || 'Wire Outflow' }}</td>
+          <td class="py-4 px-5 text-slate-400 text-xxs font-semibold">{{ t.payment_mode || 'Bank Wire' }}</td>
+          <td class="py-4 px-5">
+            <span class="font-bold text-white block">{{ t.accountname || 'N/A' }}</span>
+            <span class="text-xxs text-slate-400">{{ t.bankname }} &bull; {{ t.accountnumber }}</span>
+          </td>
+          <td class="py-4 px-5">
+            <span class="px-2.5 py-0.5 rounded-full text-xxs font-bold"
+              [class.bg-emerald-950]="t.status === 'Processed'" [class.text-emerald-400]="t.status === 'Processed'"
+              [class.bg-amber-950]="t.status === 'Pending'" [class.text-amber-400]="t.status === 'Pending'"
+              [class.bg-yellow-950]="t.status === 'On-hold'" [class.text-yellow-400]="t.status === 'On-hold'"
+              [class.bg-red-950]="t.status === 'Rejected'" [class.text-red-400]="t.status === 'Rejected'">
+              {{ t.status }}
+            </span>
+          </td>
+          <td class="py-4 px-5 text-slate-500 text-xxs">
+            {{ t.created_at | date:'medium' }}
+          </td>
+          <td class="py-4 px-5 text-right space-x-1.5 whitespace-nowrap">
+            <button *ngIf="t.status !== 'Processed'" (click)="process(t.id, 'Processed')" class="px-3 py-1.5 rounded-xl bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 font-bold text-xxs">
+              Approve
+            </button>
+            <button *ngIf="t.status !== 'On-hold'" (click)="process(t.id, 'On-hold')" class="px-3 py-1.5 rounded-xl bg-yellow-600/20 text-yellow-400 hover:bg-yellow-600/30 font-bold text-xxs">
+              Hold
+            </button>
+            <button *ngIf="t.status !== 'Rejected'" (click)="process(t.id, 'Rejected')" class="px-3 py-1.5 rounded-xl bg-red-600/20 text-red-400 hover:bg-red-600/30 font-bold text-xxs">
+              Reject
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredTransfers().length === 0 && !loading">
+          <td colspan="9" class="py-8 text-center text-slate-500 text-xs">No transfer records found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

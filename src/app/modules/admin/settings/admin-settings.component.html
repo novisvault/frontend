@@ -1,0 +1,168 @@
+<div class="max-w-5xl mx-auto space-y-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+      Transfer Codes & Platform Settings
+    </h1>
+    <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+      Configure multi-tier international clearance codes (COT, TAX, IMF, ATC, AML) and operational preferences.
+    </p>
+  </div>
+
+  <div *ngIf="message" class="p-3.5 rounded-2xl bg-emerald-950 border border-emerald-800 text-emerald-300 text-xs font-bold">
+    <i class="fa fa-check-circle mr-2"></i> {{ message }}
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex space-x-2 border-b border-slate-800 pb-2">
+    <button (click)="activeTab = 'codes'" [class.bg-blue-600]="activeTab === 'codes'" [class.text-white]="activeTab === 'codes'" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-colors">
+      <i class="fa fa-key mr-2"></i> Transfer Codes Settings
+    </button>
+    <button (click)="activeTab = 'general'" [class.bg-blue-600]="activeTab === 'general'" [class.text-white]="activeTab === 'general'" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-colors">
+      <i class="fa fa-sliders mr-2"></i> General System Preferences
+    </button>
+  </div>
+
+  <!-- Tab 1: Codes Settings Matching transfercodes.blade.php -->
+  <div *ngIf="activeTab === 'codes'" class="bg-slate-900/90 rounded-3xl border border-slate-800 shadow-2xl p-6 sm:p-8 space-y-6">
+    <form (ngSubmit)="saveSettings()" class="space-y-6">
+      <!-- Code 1 & 2 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-2xl bg-slate-950/60 border border-slate-800">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black text-amber-400 uppercase tracking-wider">Code 1 (e.g. COT Code)</label>
+            <div class="flex items-center space-x-3 text-xs">
+              <label class="flex items-center space-x-1 text-emerald-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code1status" name="code1status" value="1"> <span>ON</span>
+              </label>
+              <label class="flex items-center space-x-1 text-slate-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code1status" name="code1status" value="0"> <span>OFF</span>
+              </label>
+            </div>
+          </div>
+          <input type="text" [(ngModel)]="code1" name="code1" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-white">
+          <textarea [(ngModel)]="code1message" name="code1message" rows="2" placeholder="Prompt message displayed to user during wire transfer" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-slate-300"></textarea>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black text-amber-400 uppercase tracking-wider">Code 2 (e.g. Tax Clearance)</label>
+            <div class="flex items-center space-x-3 text-xs">
+              <label class="flex items-center space-x-1 text-emerald-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code2status" name="code2status" value="1"> <span>ON</span>
+              </label>
+              <label class="flex items-center space-x-1 text-slate-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code2status" name="code2status" value="0"> <span>OFF</span>
+              </label>
+            </div>
+          </div>
+          <input type="text" [(ngModel)]="code2" name="code2" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-white">
+          <textarea [(ngModel)]="code2message" name="code2message" rows="2" placeholder="Prompt message displayed to user during wire transfer" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-slate-300"></textarea>
+        </div>
+      </div>
+
+      <!-- Code 3 & 4 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-2xl bg-slate-950/60 border border-slate-800">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black text-amber-400 uppercase tracking-wider">Code 3 (e.g. IMF Clearance)</label>
+            <div class="flex items-center space-x-3 text-xs">
+              <label class="flex items-center space-x-1 text-emerald-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code3status" name="code3status" value="1"> <span>ON</span>
+              </label>
+              <label class="flex items-center space-x-1 text-slate-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code3status" name="code3status" value="0"> <span>OFF</span>
+              </label>
+            </div>
+          </div>
+          <input type="text" [(ngModel)]="code3" name="code3" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-white">
+          <textarea [(ngModel)]="code3message" name="code3message" rows="2" placeholder="Prompt message displayed to user during wire transfer" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-slate-300"></textarea>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black text-amber-400 uppercase tracking-wider">Code 4 (e.g. Anti-Terrorist Clearance)</label>
+            <div class="flex items-center space-x-3 text-xs">
+              <label class="flex items-center space-x-1 text-emerald-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code4status" name="code4status" value="1"> <span>ON</span>
+              </label>
+              <label class="flex items-center space-x-1 text-slate-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code4status" name="code4status" value="0"> <span>OFF</span>
+              </label>
+            </div>
+          </div>
+          <input type="text" [(ngModel)]="code4" name="code4" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-white">
+          <textarea [(ngModel)]="code4message" name="code4message" rows="2" placeholder="Prompt message displayed to user during wire transfer" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-slate-300"></textarea>
+        </div>
+      </div>
+
+      <!-- Code 5 & OTP -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-2xl bg-slate-950/60 border border-slate-800">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black text-amber-400 uppercase tracking-wider">Code 5 (e.g. Anti-Money Laundering)</label>
+            <div class="flex items-center space-x-3 text-xs">
+              <label class="flex items-center space-x-1 text-emerald-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code5status" name="code5status" value="1"> <span>ON</span>
+              </label>
+              <label class="flex items-center space-x-1 text-slate-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="code5status" name="code5status" value="0"> <span>OFF</span>
+              </label>
+            </div>
+          </div>
+          <input type="text" [(ngModel)]="code5" name="code5" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-white">
+          <textarea [(ngModel)]="code5message" name="code5message" rows="2" placeholder="Prompt message displayed to user during wire transfer" class="w-full rounded-xl bg-slate-900 border border-slate-700 px-4 py-2 text-xs text-slate-300"></textarea>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-black text-purple-400 uppercase tracking-wider">OTP Verification</label>
+            <div class="flex items-center space-x-3 text-xs">
+              <label class="flex items-center space-x-1 text-emerald-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="otp" name="otp" value="1"> <span>ON</span>
+              </label>
+              <label class="flex items-center space-x-1 text-slate-400 font-bold cursor-pointer">
+                <input type="radio" [(ngModel)]="otp" name="otp" value="0"> <span>OFF</span>
+              </label>
+            </div>
+          </div>
+          <p class="text-xxs text-slate-400">
+            When enabled, clients must provide a One-Time Authorization Password (OTP) before initiating any outgoing funds dispatch.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button type="submit" class="px-8 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs shadow-xl shadow-blue-600/30 transition-all">
+          Save Transfer Codes Configuration
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tab 2: General System Preferences -->
+  <div *ngIf="activeTab === 'general'" class="bg-slate-900/90 rounded-3xl border border-slate-800 shadow-2xl p-6 sm:p-8 space-y-6">
+    <form (ngSubmit)="saveSettings()" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xxs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Institution / Site Name</label>
+          <input type="text" [(ngModel)]="site_name" name="site_name" class="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-xxs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Currency Symbol</label>
+          <input type="text" [(ngModel)]="currency" name="currency" class="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-xs text-white">
+        </div>
+        <div>
+          <label class="block text-xxs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Currency Code (ISO)</label>
+          <input type="text" [(ngModel)]="s_currency" name="s_currency" class="w-full rounded-xl bg-slate-950 border border-slate-800 px-4 py-2.5 text-xs text-white">
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-4">
+        <button type="submit" class="px-8 py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs shadow-xl shadow-blue-600/30 transition-all">
+          Save General Preferences
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

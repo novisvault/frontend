@@ -1,0 +1,58 @@
+/* Scoped styling for Landing Page to prevent purpose.css conflicts */
+
+.hero-title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.hero-desc {
+  color: #f1f5f9 !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Rate Card Specific Styling */
+.rate-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 30px -10px rgba(14, 165, 233, 0.2);
+  }
+}
+
+:host-context(.dark) .rate-card {
+  background-color: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+.rate-num {
+  font-weight: 800;
+  color: #0284c7;
+}
+
+:host-context(.dark) .rate-num {
+  color: #38bdf8;
+}
+
+.rate-title {
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+:host-context(.dark) .rate-title {
+  color: #f8fafc;
+}
+
+.rate-sub {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+:host-context(.dark) .rate-sub {
+  color: #94a3b8;
+}

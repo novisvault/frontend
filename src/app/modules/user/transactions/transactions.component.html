@@ -1,0 +1,315 @@
+<div class="space-y-6">
+  <!-- Desktop Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+        Transaction Ledger
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+        Consolidated ledger of incoming deposits, wire outflows, and automated settlement records.
+      </p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center space-x-3">
+      <button (click)="showFilterModal = true" class="inline-flex items-center px-4 py-2.5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-gray-200/50 dark:border-gray-700/50 shadow-sm text-xs font-bold rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+        <i class="fa-solid fa-filter text-xs mr-2 text-primary-500"></i>
+        <span>Filter Records</span>
+      </button>
+
+      <button (click)="showExportModal = true" class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg shadow-primary-500/25 text-xs font-bold rounded-xl text-white transition-all transform hover:scale-105">
+        <i class="fa-solid fa-download text-xs mr-2"></i>
+        <span>Export Statement</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search & Quick Filter Bar -->
+  <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-4 shadow-sm border border-gray-200/50 dark:border-gray-700/50 flex flex-col md:flex-row gap-3 items-center justify-between">
+    <div class="relative w-full md:w-96">
+      <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+        <i class="fa-solid fa-search text-xs"></i>
+      </div>
+      <input type="text" [(ngModel)]="search" (keyup.enter)="loadTransactions()" placeholder="Search by reference, recipient, or note..." class="w-full pl-9 pr-4 py-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500">
+    </div>
+
+    <div class="flex items-center space-x-2 w-full md:w-auto">
+      <select [(ngModel)]="typeFilter" (change)="loadTransactions()" class="px-3 py-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <option value="all">All Channels</option>
+        <option value="Credit">Credits Only (+)</option>
+        <option value="Debit">Debits Only (-)</option>
+      </select>
+
+      <select [(ngModel)]="statusFilter" (change)="loadTransactions()" class="px-3 py-2 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <option value="all">All Statuses</option>
+        <option value="Processed">Processed</option>
+        <option value="Pending">Pending Clearance</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Transactions Table / Container -->
+  <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg dark:shadow-gray-900/50 border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200/50 dark:divide-gray-700/50">
+        <thead class="bg-gradient-to-r from-primary-50/80 to-primary-100/50 dark:from-primary-900/30 dark:to-primary-800/30">
+          <tr>
+            <th class="px-4 py-3.5 text-left text-xxs font-bold text-primary-900 dark:text-primary-100 uppercase tracking-wider w-12"></th>
+            <th class="px-4 py-3.5 text-left text-xxs font-bold text-primary-900 dark:text-primary-100 uppercase tracking-wider">Amount</th>
+            <th class="px-4 py-3.5 text-left text-xxs font-bold text-primary-900 dark:text-primary-100 uppercase tracking-wider">Type</th>
+            <th class="px-4 py-3.5 text-left text-xxs font-bold text-primary-900 dark:text-primary-100 uppercase tracking-wider">Status</th>
+            <th class="px-4 py-3.5 text-left text-xxs font-bold text-primary-900 dark:text-primary-100 uppercase tracking-wider">Reference</th>
+            <th class="px-4 py-3.5 text-left text-xxs font-bold text-primary-900 dark:text-primary-100 uppercase tracking-wider">Description</th>
+            <th class="px-4 py-3.5 text-left text-xxs font-bold text-primary-900 dark:text-primary-100 uppercase tracking-wider">Date</th>
+            <th class="px-4 py-3.5 text-right text-xxs font-bold text-primary-900 dark:text-primary-100 uppercase tracking-wider">Action</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200/30 dark:divide-gray-700/30">
+          <tr *ngFor="let t of transactions" class="hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all duration-200">
+            <!-- Icon -->
+            <td class="px-4 py-4 whitespace-nowrap">
+              <div *ngIf="t.type === 'Debit'" class="h-8 w-8 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-minus text-xs"></i>
+              </div>
+              <div *ngIf="t.type === 'Credit'" class="h-8 w-8 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-xl flex items-center justify-center">
+                <i class="fa-solid fa-plus text-xs"></i>
+              </div>
+            </td>
+
+            <!-- Amount -->
+            <td class="px-4 py-4 whitespace-nowrap">
+              <div class="text-sm font-extrabold text-gray-900 dark:text-white font-mono">
+                {{ t.type === 'Debit' ? '-' : '+' }}${{ t.amount | number:'1.2-2' }}
+              </div>
+              <div class="text-xxs text-gray-400 font-sans">USD</div>
+            </td>
+
+            <!-- Type Badge -->
+            <td class="px-4 py-4 whitespace-nowrap">
+              <span *ngIf="t.type === 'Credit'" class="inline-flex items-center px-2 py-0.5 rounded-lg text-xxs font-bold bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300">
+                <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></span>
+                Credit
+              </span>
+              <span *ngIf="t.type === 'Debit'" class="inline-flex items-center px-2 py-0.5 rounded-lg text-xxs font-bold bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">
+                <span class="w-1.5 h-1.5 bg-red-500 rounded-full mr-1.5"></span>
+                Debit
+              </span>
+            </td>
+
+            <!-- Status Badge -->
+            <td class="px-4 py-4 whitespace-nowrap">
+              <span *ngIf="t.status === 'Pending'" class="inline-flex items-center px-2 py-0.5 rounded-lg text-xxs font-bold bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-400">
+                <span class="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-1.5 animate-pulse"></span>
+                Pending
+              </span>
+              <span *ngIf="t.status !== 'Pending'" class="inline-flex items-center px-2 py-0.5 rounded-lg text-xxs font-bold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
+                <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-1.5"></span>
+                {{ t.status }}
+              </span>
+            </td>
+
+            <!-- Reference -->
+            <td class="px-4 py-4 whitespace-nowrap text-xs font-mono font-medium text-gray-500 dark:text-gray-400">
+              {{ t.reference }}
+            </td>
+
+            <!-- Description -->
+            <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-700 dark:text-gray-300">
+              <div class="font-semibold">{{ t.description }}</div>
+              <div *ngIf="t.account_name && t.account_name !== 'N/A'" class="text-xxs text-gray-400">
+                To: {{ t.account_name }} ({{ t.bank_name }})
+              </div>
+            </td>
+
+            <!-- Date -->
+            <td class="px-4 py-4 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+              {{ t.created_at | date:'mediumDate' }}
+            </td>
+
+            <!-- Action -->
+            <td class="px-4 py-4 whitespace-nowrap text-right">
+              <button (click)="viewReceipt(t)" class="inline-flex items-center px-3 py-1.5 rounded-xl bg-primary-50 dark:bg-primary-950 text-primary-600 dark:text-primary-400 hover:bg-primary-100 text-xs font-bold transition-colors">
+                <i class="fa-solid fa-receipt mr-1.5 text-xs"></i>
+                <span>Receipt</span>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Empty State -->
+          <tr *ngIf="!loading && transactions.length === 0">
+            <td colspan="8" class="px-6 py-12 text-center">
+              <div class="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-400 mx-auto flex items-center justify-center mb-3">
+                <i class="fa-solid fa-inbox text-xl"></i>
+              </div>
+              <h4 class="text-sm font-bold text-gray-900 dark:text-white">No Transactions Recorded</h4>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">There are no transactions matching the current criteria.</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="p-4 border-t border-gray-200/50 dark:border-gray-700/50 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <span class="text-xs text-gray-500 dark:text-gray-400">
+        Showing Page {{ page }} of {{ totalPages }} ({{ total }} total records)
+      </span>
+      <div class="flex items-center space-x-2">
+        <button [disabled]="page <= 1" (click)="changePage(page - 1)" class="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700">
+          Previous
+        </button>
+        <button [disabled]="page >= totalPages" (click)="changePage(page + 1)" class="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= RECEIPT MODAL ================= -->
+<div *ngIf="showReceiptModal && selectedTransaction" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+  <div class="receipt-printable bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-700 relative overflow-hidden">
+    <!-- Top Gradient Bar -->
+    <div class="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-primary-500 via-indigo-500 to-purple-500"></div>
+
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center">
+          <i class="fa-solid fa-university text-sm"></i>
+        </div>
+        <span class="font-extrabold text-base text-gray-900 dark:text-white">BankPro<span class="text-primary-500">X</span></span>
+      </div>
+      <button (click)="closeReceiptModal()" class="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-500 hover:text-gray-900 flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <div class="text-center mb-6">
+      <div class="text-xxs uppercase tracking-widest font-bold text-gray-400">Official Settlement Receipt</div>
+      <div class="text-2xl font-black text-gray-900 dark:text-white mt-1 font-mono">
+        ${{ selectedTransaction.amount | number:'1.2-2' }} USD
+      </div>
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xxs font-bold mt-2" [ngClass]="selectedTransaction.type === 'Credit' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
+        {{ selectedTransaction.type }} • {{ selectedTransaction.status }}
+      </span>
+    </div>
+
+    <div class="bg-gray-50 dark:bg-gray-900/60 rounded-2xl p-4 text-xs space-y-2.5 border border-gray-100 dark:border-gray-700/60 mb-6">
+      <div class="flex justify-between">
+        <span class="text-gray-400">Reference:</span>
+        <span class="font-mono font-bold text-gray-900 dark:text-white">{{ selectedTransaction.reference }}</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-gray-400">Date Cleared:</span>
+        <span class="text-gray-700 dark:text-gray-300">{{ selectedTransaction.created_at | date:'medium' }}</span>
+      </div>
+      <div class="flex justify-between" *ngIf="selectedTransaction.account_name && selectedTransaction.account_name !== 'N/A'">
+        <span class="text-gray-400">Beneficiary:</span>
+        <span class="font-bold text-gray-900 dark:text-white">{{ selectedTransaction.account_name }}</span>
+      </div>
+      <div class="flex justify-between" *ngIf="selectedTransaction.bank_name">
+        <span class="text-gray-400">Institution:</span>
+        <span class="text-gray-700 dark:text-gray-300">{{ selectedTransaction.bank_name }}</span>
+      </div>
+      <div class="flex justify-between">
+        <span class="text-gray-400">Channel / Note:</span>
+        <span class="text-gray-700 dark:text-gray-300">{{ selectedTransaction.description }}</span>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end space-x-3">
+      <button (click)="printReceipt()" class="px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center">
+        <i class="fa-solid fa-print mr-2 text-primary-500"></i> Print Receipt
+      </button>
+      <button (click)="closeReceiptModal()" class="px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold shadow-lg shadow-primary-500/25 transition-all">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FILTER MODAL ================= -->
+<div *ngIf="showFilterModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700">
+      <h3 class="text-base font-bold text-gray-900 dark:text-white">Filter Transactions</h3>
+      <button (click)="showFilterModal = false" class="text-gray-400 hover:text-gray-600">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="space-y-3">
+      <div>
+        <label class="block text-xxs font-bold text-gray-500 uppercase mb-1">Search Keywords</label>
+        <input type="text" [(ngModel)]="search" placeholder="Reference, name..." class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white">
+      </div>
+
+      <div>
+        <label class="block text-xxs font-bold text-gray-500 uppercase mb-1">Direction / Type</label>
+        <select [(ngModel)]="typeFilter" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white">
+          <option value="all">All Directions</option>
+          <option value="Credit">Credits Only (+)</option>
+          <option value="Debit">Debits Only (-)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xxs font-bold text-gray-500 uppercase mb-1">Clearance Status</label>
+        <select [(ngModel)]="statusFilter" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white">
+          <option value="all">All Statuses</option>
+          <option value="Processed">Processed</option>
+          <option value="Pending">Pending Clearance</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100 dark:border-gray-700">
+      <button (click)="resetFilters()" class="px-4 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-700">
+        Reset
+      </button>
+      <button (click)="applyFilters()" class="px-5 py-2 rounded-xl bg-primary-600 hover:bg-primary-700 text-white text-xs font-bold shadow-md shadow-primary-500/20">
+        Apply Filter
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= EXPORT MODAL ================= -->
+<div *ngIf="showExportModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-gray-100 dark:border-gray-700 space-y-4">
+    <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-gray-700">
+      <h3 class="text-base font-bold text-gray-900 dark:text-white">Export Financial Statement</h3>
+      <button (click)="showExportModal = false" class="text-gray-400 hover:text-gray-600">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div *ngIf="exportSuccess" class="p-3 rounded-xl bg-green-50 dark:bg-green-950/40 text-green-600 text-xs font-bold text-center">
+      <i class="fa-solid fa-check mr-2"></i> Statement exported and downloaded successfully!
+    </div>
+
+    <div class="space-y-3">
+      <div>
+        <label class="block text-xxs font-bold text-gray-500 uppercase mb-1">Export Format</label>
+        <select [(ngModel)]="exportFormat" class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white">
+          <option value="csv">CSV (Comma Separated Values)</option>
+          <option value="pdf">Official PDF Statement</option>
+          <option value="xlsx">Excel Spreadsheet (.xlsx)</option>
+        </select>
+      </div>
+      <p class="text-xxs text-gray-400">
+        The statement will generate a cryptographic verification seal containing all {{ total }} transaction entries.
+      </p>
+    </div>
+
+    <div class="flex items-center justify-end space-x-2 pt-3 border-t border-gray-100 dark:border-gray-700">
+      <button (click)="showExportModal = false" class="px-4 py-2 rounded-xl text-xs font-bold text-gray-500 hover:text-gray-700">
+        Cancel
+      </button>
+      <button (click)="triggerExport()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-bold shadow-md shadow-primary-500/20 flex items-center">
+        <i class="fa-solid fa-file-export mr-2"></i>
+        <span>Download Statement</span>
+      </button>
+    </div>
+  </div>
+</div>

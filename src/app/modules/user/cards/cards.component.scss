@@ -1,0 +1,30 @@
+.virtual-card {
+  height: 200px;
+  color: #fff;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+  &:hover {
+    transform: translateY(-5px);
+  }
+}
+
+.standard-theme {
+  background: linear-gradient(135deg, #0d6efd 0%, #002b66 100%);
+}
+
+.gold-theme {
+  background: linear-gradient(135deg, #d4af37 0%, #856d1a 100%);
+}
+
+.platinum-theme {
+  background: linear-gradient(135deg, #718096 0%, #2d3748 100%);
+}
+
+.black-theme {
+  background: linear-gradient(135deg, #2d3748 0%, #000000 100%);
+  border: 1px solid #4a5568;
+}
+
+.card-pan {
+  letter-spacing: 2px;
+}

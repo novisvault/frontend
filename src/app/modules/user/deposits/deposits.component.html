@@ -1,0 +1,132 @@
+<!-- Header Section -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div class="flex items-center space-x-3">
+    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary-600 to-primary-400 text-white flex items-center justify-center shadow-lg shadow-primary-500/30">
+      <i class="fa-solid fa-plus text-xl"></i>
+    </div>
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+        Deposit & Fund Account
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+        Credit your checking account instantly via cryptocurrency networks or institutional wire transfers.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Left 2 Cols: Method Selector & Instructions Form -->
+  <div class="lg:col-span-2 space-y-6">
+    <!-- 1. Select Payment Method -->
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center">
+        <span class="w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs mr-2">1</span>
+        Select Payment Corridor
+      </h3>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div *ngFor="let m of methods" (click)="selectMethod(m)" class="p-4 rounded-2xl border transition-all cursor-pointer flex items-center space-x-3" [class.border-primary-500]="selectedMethod?.id === m.id" [class.bg-primary-50/50]="selectedMethod?.id === m.id" [class.dark:bg-primary-950/20]="selectedMethod?.id === m.id" [class.border-gray-100]="selectedMethod?.id !== m.id" [class.dark:border-gray-700/60]="selectedMethod?.id !== m.id" [class.hover:border-gray-300]="selectedMethod?.id !== m.id">
+          <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-coins text-base"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ m.name }}</p>
+            <p class="text-xxs text-gray-400">Duration: {{ m.duration || 'Instant - 1 hr' }}</p>
+          </div>
+          <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center" [class.border-primary-500]="selectedMethod?.id === m.id" [class.bg-primary-500]="selectedMethod?.id === m.id" [class.border-gray-300]="selectedMethod?.id !== m.id">
+            <div *ngIf="selectedMethod?.id === m.id" class="w-1.5 h-1.5 bg-white rounded-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Transfer Form & Confirmation -->
+    <div *ngIf="selectedMethod" class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700/60 space-y-6">
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center">
+        <span class="w-6 h-6 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs mr-2">2</span>
+        Deposit Instructions & Clearance
+      </h3>
+
+      <!-- Crypto Address Display Box -->
+      <div *ngIf="selectedMethod.methodtype === 'crypto'" class="p-5 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/60 text-center">
+        <span class="text-xxs uppercase tracking-wider text-gray-400 block mb-1">
+          Official Deposit Wallet Address ({{ selectedMethod.network || 'Mainnet' }})
+        </span>
+        <p class="font-mono font-bold text-xs sm:text-sm text-gray-900 dark:text-white break-all mb-3 select-all">
+          {{ selectedMethod.wallet_address || 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' }}
+        </p>
+        <button (click)="copyAddress(selectedMethod.wallet_address || 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh')" class="px-4 py-2 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-primary-600 dark:text-primary-400 font-bold text-xs shadow-sm hover:bg-gray-50 transition-all inline-flex items-center space-x-1.5">
+          <i class="fa-solid" [class.fa-check]="copied" [class.fa-copy]="!copied"></i>
+          <span>{{ copied ? 'Address Copied!' : 'Copy Wallet Address' }}</span>
+        </button>
+      </div>
+
+      <!-- Fiat Bank Details Box -->
+      <div *ngIf="selectedMethod.methodtype === 'currency'" class="p-5 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/60 space-y-2">
+        <div class="flex justify-between text-xs">
+          <span class="text-gray-400">Bank Name:</span>
+          <span class="font-bold text-gray-900 dark:text-white">{{ selectedMethod.bankname }}</span>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span class="text-gray-400">Account Name:</span>
+          <span class="font-bold text-gray-900 dark:text-white">{{ selectedMethod.account_name }}</span>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span class="text-gray-400">Account Number:</span>
+          <span class="font-mono font-bold text-gray-900 dark:text-white">{{ selectedMethod.account_number }}</span>
+        </div>
+        <div class="flex justify-between text-xs" *ngIf="selectedMethod.swift_code">
+          <span class="text-gray-400">SWIFT / BIC:</span>
+          <span class="font-mono font-bold text-gray-900 dark:text-white">{{ selectedMethod.swift_code }}</span>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span class="text-gray-400">Routing Number:</span>
+          <span class="font-mono font-bold text-gray-900 dark:text-white">{{ selectedMethod.routing || selectedMethod.swift_code || '021000021' }}</span>
+        </div>
+      </div>
+
+      <!-- Deposit Input Form -->
+      <form (ngSubmit)="submitDeposit()" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Deposit Amount ($ USD) <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center font-bold text-gray-400">$</span>
+            <input type="number" [(ngModel)]="amount" name="amount" min="10" step="0.01" class="block w-full rounded-2xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 pl-8 pr-4 py-3 text-lg font-bold text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500" placeholder="0.00" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Payment Screenshot / Wire Proof
+          </label>
+          <input type="file" (change)="onFileSelected($event)" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-primary-50 file:text-primary-600 hover:file:bg-primary-100">
+        </div>
+
+        <button type="submit" [disabled]="submitting || !amount" class="w-full py-4 rounded-2xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary-500/25 hover:from-primary-600 transition-all disabled:opacity-50 flex items-center justify-center space-x-2">
+          <span *ngIf="submitting" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          <i *ngIf="!submitting" class="fa-solid fa-cloud-arrow-up"></i>
+          <span>Submit Deposit Proof for Clearance</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right 1 Col: Information & History -->
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">
+        Settlement Safeguards
+      </h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed mb-4">
+        Crypto deposits are verified with minimum 3 blockchain confirmations. Once verified, checking balances are credited automatically.
+      </p>
+
+      <div class="p-4 rounded-2xl bg-primary-50/50 dark:bg-primary-950/20 border border-primary-100 dark:border-primary-800/40 text-primary-700 dark:text-primary-300 text-xs">
+        <i class="fa-solid fa-shield-check mr-1.5"></i> All client deposits are segregated and FDIC insured up to $250,000.
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,294 @@
+<!-- Mobile Fixed Login/Register Buttons -->
+<div class="mobile-fixed-buttons">
+  <a routerLink="/auth/login" class="flex-1 px-6 py-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl text-primary-600 dark:text-primary-400 font-semibold shadow-lg border border-primary-200 dark:border-primary-700 hover:bg-primary-50 dark:hover:bg-gray-700 transition-colors text-center">
+    <i class="fa-solid fa-sign-in-alt mr-2"></i> Login
+  </a>
+  <a routerLink="/auth/register" class="flex-1 px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold shadow-lg transition-colors text-center">
+    <i class="fa-solid fa-user-plus mr-2"></i> Register
+  </a>
+</div>
+
+<!-- Navigation Header -->
+<nav class="relative bg-gradient-to-r from-white via-primary-50 to-white dark:from-gray-900 dark:via-primary-900 dark:to-gray-900 backdrop-blur-xl border-b border-primary-200/50 dark:border-primary-700/30 sticky top-0 z-50 shadow-lg shadow-primary-500/5">
+  <!-- Animated Background Pattern -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute -top-10 -left-10 w-20 h-20 bg-primary-200/20 dark:bg-primary-800/20 rounded-full blur-xl animate-pulse"></div>
+    <div class="absolute -top-5 right-1/4 w-16 h-16 bg-teal-200/20 dark:bg-teal-800/20 rounded-full blur-lg animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute -bottom-10 -right-10 w-24 h-24 bg-purple-200/20 dark:bg-purple-800/20 rounded-full blur-xl animate-pulse" style="animation-delay: 2s;"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16 lg:h-18">
+      <!-- Logo with glow effect -->
+      <a routerLink="/" class="flex items-center group cursor-pointer">
+        <div class="relative flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-600 to-primary-400 flex items-center justify-center text-white shadow-lg shadow-primary-500/30">
+            <i class="fa-solid fa-university text-xl"></i>
+          </div>
+          <span class="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            BankPro<span class="text-primary-600 dark:text-primary-400">X</span>
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center space-x-1">
+        <a routerLink="/" routerLinkActive="text-primary-600 dark:text-primary-400 font-bold" [routerLinkActiveOptions]="{exact: true}" class="relative px-4 py-2 text-gray-700 dark:text-gray-300 font-medium transition-all duration-300 hover:text-primary-600 dark:hover:text-primary-400 group">
+          <span class="relative z-10">Home</span>
+          <div class="absolute inset-0 bg-primary-50 dark:bg-primary-900/30 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-300 origin-center"></div>
+        </a>
+        <a routerLink="/about" routerLinkActive="text-primary-600 dark:text-primary-400 font-bold" class="relative px-4 py-2 text-gray-700 dark:text-gray-300 font-medium transition-all duration-300 hover:text-primary-600 dark:hover:text-primary-400 group">
+          <span class="relative z-10">About</span>
+          <div class="absolute inset-0 bg-primary-50 dark:bg-primary-900/30 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-300 origin-center"></div>
+        </a>
+        <div class="relative group">
+          <button class="relative px-4 py-2 text-gray-700 dark:text-gray-300 font-medium transition-all duration-300 hover:text-primary-600 dark:hover:text-primary-400 flex items-center">
+            <span class="relative z-10">Services</span>
+            <i class="fa-solid fa-chevron-down ml-1 text-xs group-hover:rotate-180 transition-transform duration-300"></i>
+            <div class="absolute inset-0 bg-primary-50 dark:bg-primary-900/30 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-300 origin-center"></div>
+          </button>
+          <!-- Services Dropdown -->
+          <div class="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+            <div class="p-2">
+              <a routerLink="/personal" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-xl transition-all duration-300">
+                <i class="fa-solid fa-user mr-3 text-primary-500"></i> Personal Banking
+              </a>
+              <a routerLink="/business" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-xl transition-all duration-300">
+                <i class="fa-solid fa-briefcase mr-3 text-blue-500"></i> Business Banking
+              </a>
+              <a routerLink="/loans" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-xl transition-all duration-300">
+                <i class="fa-solid fa-handshake mr-3 text-green-500"></i> Loans & Credit
+              </a>
+              <a routerLink="/cards" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-xl transition-all duration-300">
+                <i class="fa-solid fa-credit-card mr-3 text-purple-500"></i> Cards
+              </a>
+              <a routerLink="/grants" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/30 rounded-xl transition-all duration-300">
+                <i class="fa-solid fa-hand-holding-dollar mr-3 text-orange-500"></i> Grants & Aid
+              </a>
+            </div>
+          </div>
+        </div>
+        <a routerLink="/contact" routerLinkActive="text-primary-600 dark:text-primary-400 font-bold" class="relative px-4 py-2 text-gray-700 dark:text-gray-300 font-medium transition-all duration-300 hover:text-primary-600 dark:hover:text-primary-400 group">
+          <span class="relative z-10">Contact</span>
+          <div class="absolute inset-0 bg-primary-50 dark:bg-primary-900/30 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-300 origin-center"></div>
+        </a>
+      </div>
+
+      <!-- Desktop Action Buttons -->
+      <div class="hidden lg:flex items-center space-x-3">
+        <!-- Dark Mode Toggle -->
+        <button (click)="toggleDarkMode()" type="button" aria-label="Toggle dark mode"
+          class="relative p-3 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-300 hover:from-primary-50 hover:to-primary-100 dark:hover:from-primary-900/30 dark:hover:to-primary-800/30 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 group">
+          <i class="fa-solid fa-sun text-lg group-hover:rotate-180 transition-transform duration-500" *ngIf="darkMode"></i>
+          <i class="fa-solid fa-moon text-lg group-hover:rotate-12 transition-transform duration-300" *ngIf="!darkMode"></i>
+        </button>
+
+        <!-- Login Button -->
+        <a routerLink="/auth/login" class="relative px-4 py-2.5 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold transition-all duration-300 group">
+          <span class="relative z-10">Login</span>
+          <div class="absolute inset-0 bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-xl scale-0 group-hover:scale-100 transition-transform duration-300"></div>
+        </a>
+
+        <!-- Open Account Button -->
+        <a routerLink="/auth/register" class="relative px-6 py-2.5 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-600 hover:from-primary-700 hover:via-primary-600 hover:to-primary-700 text-white font-semibold rounded-2xl transition-all duration-300 shadow-lg shadow-primary-600/25 hover:shadow-xl hover:shadow-primary-600/40 hover:-translate-y-0.5 group overflow-hidden">
+          <span class="relative z-10 flex items-center">
+            <i class="fa-solid fa-shield-halved mr-2"></i>
+            Open Account
+          </span>
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button (click)="toggleMobileMenu()" type="button" aria-label="Toggle navigation menu"
+        class="lg:hidden relative p-3 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 text-gray-600 dark:text-gray-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
+        <i class="fa-solid fa-bars text-lg" *ngIf="!mobileMenuOpen"></i>
+        <i class="fa-solid fa-times text-lg" *ngIf="mobileMenuOpen"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Dropdown -->
+  <div *ngIf="mobileMenuOpen"
+    class="lg:hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-t border-primary-200/70 dark:border-primary-700/50 shadow-2xl z-50 animate-fadeIn">
+    <div class="px-6 py-6 space-y-2">
+      <a routerLink="/" (click)="closeMobileMenu()" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium rounded-2xl hover:bg-primary-50 dark:hover:bg-primary-900/30">
+        <i class="fa-solid fa-home mr-4 text-primary-500"></i> Home
+      </a>
+      <a routerLink="/about" (click)="closeMobileMenu()" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium rounded-2xl hover:bg-primary-50 dark:hover:bg-primary-900/30">
+        <i class="fa-solid fa-info-circle mr-4 text-teal-500"></i> About
+      </a>
+      <div>
+        <button (click)="toggleServices()" type="button" class="flex items-center justify-between w-full px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium rounded-2xl hover:bg-primary-50 dark:hover:bg-primary-900/30">
+          <span class="flex items-center"><i class="fa-solid fa-cogs mr-4 text-purple-500"></i> Services</span>
+          <i class="fa-solid fa-chevron-down text-xs transition-transform" [ngClass]="{'rotate-180': servicesOpen}"></i>
+        </button>
+        <div *ngIf="servicesOpen" class="ml-8 mt-1 space-y-1">
+          <a routerLink="/personal" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600">Personal Banking</a>
+          <a routerLink="/business" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600">Business Banking</a>
+          <a routerLink="/loans" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600">Loans & Credit</a>
+          <a routerLink="/cards" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600">Cards</a>
+          <a routerLink="/grants" (click)="closeMobileMenu()" class="block px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-600">Grants & Aid</a>
+        </div>
+      </div>
+      <a routerLink="/contact" (click)="closeMobileMenu()" class="flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium rounded-2xl hover:bg-primary-50 dark:hover:bg-primary-900/30">
+        <i class="fa-solid fa-envelope mr-4 text-pink-500"></i> Contact
+      </a>
+      <div class="pt-4 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
+        <button (click)="toggleDarkMode()" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
+          <i class="fa-solid fa-sun mr-2 text-yellow-500" *ngIf="darkMode"></i>
+          <i class="fa-solid fa-moon mr-2 text-blue-500" *ngIf="!darkMode"></i>
+          {{ darkMode ? 'Light Mode' : 'Dark Mode' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Page Content Outlet -->
+<main class="min-h-screen">
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Enhanced Footer -->
+<footer class="relative bg-gradient-to-br from-slate-900 via-primary-900 to-slate-900 dark:from-gray-900 dark:via-primary-900 dark:to-gray-900 text-white py-16 mb-20 lg:mb-0 overflow-hidden">
+  <!-- Animated background elements -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute -top-20 -left-20 w-40 h-40 bg-primary-600/20 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute top-1/2 -right-20 w-32 h-32 bg-teal-500/20 rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute -bottom-20 left-1/3 w-36 h-36 bg-purple-600/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+      <!-- Company Info -->
+      <div class="lg:col-span-1">
+        <div class="flex items-center space-x-3 mb-6">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-500 to-primary-400 flex items-center justify-center text-white shadow-lg">
+            <i class="fa-solid fa-university text-xl"></i>
+          </div>
+          <span class="text-2xl font-black text-white">BankPro<span class="text-primary-400">X</span></span>
+        </div>
+        <p class="text-primary-100 mb-6 text-sm leading-relaxed">
+          Building financial strength together with personalized banking solutions for every member. Your trusted partner in financial growth.
+        </p>
+        <div class="flex space-x-3">
+          <a href="#" class="w-10 h-10 bg-primary-800/80 hover:bg-primary-700 rounded-2xl flex items-center justify-center text-white transition-all shadow-lg hover:scale-110">
+            <i class="fa-brands fa-facebook-f text-sm"></i>
+          </a>
+          <a href="#" class="w-10 h-10 bg-primary-800/80 hover:bg-primary-700 rounded-2xl flex items-center justify-center text-white transition-all shadow-lg hover:scale-110">
+            <i class="fa-brands fa-x-twitter text-sm"></i>
+          </a>
+          <a href="#" class="w-10 h-10 bg-primary-800/80 hover:bg-primary-700 rounded-2xl flex items-center justify-center text-white transition-all shadow-lg hover:scale-110">
+            <i class="fa-brands fa-linkedin-in text-sm"></i>
+          </a>
+          <a href="#" class="w-10 h-10 bg-primary-800/80 hover:bg-primary-700 rounded-2xl flex items-center justify-center text-white transition-all shadow-lg hover:scale-110">
+            <i class="fa-brands fa-instagram text-sm"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="font-bold mb-6 text-white flex items-center">
+          <div class="w-1 h-6 bg-gradient-to-b from-primary-400 to-primary-600 rounded-full mr-3"></div>
+          Quick Links
+        </h4>
+        <ul class="space-y-3">
+          <li><a routerLink="/about" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-primary-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>About Us</span>
+          </a></li>
+          <li><a routerLink="/personal" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-primary-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Services</span>
+          </a></li>
+          <li><a routerLink="/grants" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-primary-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Grants & Aid</span>
+          </a></li>
+          <li><a routerLink="/contact" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-primary-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Contact</span>
+          </a></li>
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div>
+        <h4 class="font-bold mb-6 text-white flex items-center">
+          <div class="w-1 h-6 bg-gradient-to-b from-teal-400 to-teal-600 rounded-full mr-3"></div>
+          Services
+        </h4>
+        <ul class="space-y-3">
+          <li><a routerLink="/personal" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-teal-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Personal Banking</span>
+          </a></li>
+          <li><a routerLink="/business" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-teal-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Business Banking</span>
+          </a></li>
+          <li><a routerLink="/loans" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-teal-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Loans & Credit</span>
+          </a></li>
+          <li><a routerLink="/cards" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-teal-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Cards</span>
+          </a></li>
+        </ul>
+      </div>
+
+      <!-- Member Services -->
+      <div>
+        <h4 class="font-bold mb-6 text-white flex items-center">
+          <div class="w-1 h-6 bg-gradient-to-b from-purple-400 to-purple-600 rounded-full mr-3"></div>
+          Member Services
+        </h4>
+        <ul class="space-y-3">
+          <li><a routerLink="/auth/login" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-purple-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Online Banking</span>
+          </a></li>
+          <li><a routerLink="/faq" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-purple-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>FAQ & Help Center</span>
+          </a></li>
+          <li><a routerLink="/contact" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-purple-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>ATM Locations</span>
+          </a></li>
+          <li><a routerLink="/about" class="group flex items-center text-primary-100 hover:text-white transition-all duration-300 text-sm">
+            <i class="fa-solid fa-chevron-right text-xs mr-3 text-purple-400 group-hover:translate-x-1 transition-transform"></i>
+            <span>Security Center</span>
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom Footer -->
+    <div class="border-t border-primary-700/50 pt-8">
+      <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+        <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6">
+          <p class="text-primary-100 text-sm">
+            © {{ currentYear }} {{ siteName }}. All rights reserved.
+          </p>
+          <div class="flex items-center space-x-2 text-primary-200 text-xs">
+            <i class="fa-solid fa-shield-alt text-green-400"></i>
+            <span>FDIC Insured</span>
+            <span class="text-primary-400">•</span>
+            <i class="fa-solid fa-lock text-blue-400"></i>
+            <span>256-bit SSL</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap justify-center lg:justify-end space-x-6">
+          <a routerLink="/privacy" class="text-primary-100 hover:text-white text-sm transition-colors duration-300 hover:underline">Privacy Policy</a>
+          <a routerLink="/terms" class="text-primary-100 hover:text-white text-sm transition-colors duration-300 hover:underline">Terms of Service</a>
+          <a routerLink="/contact" class="text-primary-100 hover:text-white text-sm transition-colors duration-300 hover:underline">Accessibility</a>
+          <a routerLink="/" class="text-primary-100 hover:text-white text-sm transition-colors duration-300 hover:underline">Sitemap</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

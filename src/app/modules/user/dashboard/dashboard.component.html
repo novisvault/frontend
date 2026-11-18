@@ -1,0 +1,441 @@
+<!-- Header Section -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <div class="flex items-center space-x-2">
+      <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300">
+        {{ currentDate }}
+      </span>
+    </div>
+    <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white mt-1 tracking-tight">
+      {{ greeting }}, {{ dashboardData?.user?.name || auth.currentUser()?.name || 'Valued Client' }}
+    </h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+      Here is your live asset overview and banking account balance summary.
+    </p>
+  </div>
+
+  <div class="flex items-center space-x-3">
+    <a routerLink="/user/transfers" class="inline-flex items-center px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white text-sm font-bold shadow-lg shadow-primary-500/25 hover:from-primary-600 hover:to-primary-700 transition-all hover:scale-[1.02]">
+      <i class="fa-solid fa-paper-plane mr-2 text-xs"></i> Send Money
+    </a>
+    <a routerLink="/user/deposits" class="inline-flex items-center px-4 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 text-sm font-bold shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
+      <i class="fa-solid fa-plus mr-2 text-primary-500 text-xs"></i> Add Money
+    </a>
+  </div>
+</div>
+
+<!-- Loading Spinner -->
+<div *ngIf="loading" class="flex flex-col items-center justify-center py-20">
+  <div class="w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+  <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-4">Securing TLS connection & decrypting balances...</p>
+</div>
+
+<!-- Main Content Grid -->
+<div *ngIf="!loading && dashboardData" class="space-y-6">
+  <!-- 4 Stats Cards Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Account Limit -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700/60 hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+          <i class="fa-solid fa-credit-card text-sm"></i>
+        </div>
+        <span class="text-xxs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Available</span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-0.5">
+        ${{ (dashboardData.user.limit || 100000) | number:'1.2-2' }}
+      </h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400">Account Wire Limit</p>
+    </div>
+
+    <!-- Monthly Deposits -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700/60 hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-green-500/10 text-green-600 dark:text-green-400 flex items-center justify-center">
+          <i class="fa-solid fa-arrow-down text-sm"></i>
+        </div>
+        <span class="text-xxs font-bold text-green-600 dark:text-green-400 uppercase tracking-wider">This Month</span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-0.5">
+        ${{ (dashboardData.user.monthly_deposits || 24500) | number:'1.2-2' }}
+      </h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400">Monthly Deposits</p>
+    </div>
+
+    <!-- Monthly Expenses -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700/60 hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center">
+          <i class="fa-solid fa-arrow-up text-sm"></i>
+        </div>
+        <span class="text-xxs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">This Month</span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-0.5">
+        ${{ (dashboardData.user.monthly_expenses || 3820) | number:'1.2-2' }}
+      </h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400">Monthly Outflows</p>
+    </div>
+
+    <!-- Total Volume / ROI -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700/60 hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between mb-3">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+          <i class="fa-solid fa-chart-line text-sm"></i>
+        </div>
+        <span class="text-xxs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">All Time</span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-0.5">
+        ${{ ((dashboardData.user.account_bal || 0) + (dashboardData.user.roi || 0)) | number:'1.2-2' }}
+      </h3>
+      <p class="text-xs text-gray-500 dark:text-gray-400">Total Portfolio Volume</p>
+    </div>
+  </div>
+
+  <!-- Main 2-Column Section (Desktop Left & Right) -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left 2-Column Content -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- Enhanced Gradient Primary Balance Card -->
+      <div class="bg-gradient-to-br from-primary-600 via-primary-500 to-primary-700 dark:from-primary-700 dark:via-primary-600 dark:to-primary-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-primary-500/20 relative overflow-hidden">
+        <!-- Background floating design elements -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+          <div class="absolute -top-10 -right-10 w-44 h-44 bg-white rounded-full"></div>
+          <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-white rounded-full"></div>
+          <div class="absolute top-1/2 left-1/3 w-24 h-24 bg-white rounded-full"></div>
+        </div>
+
+        <div class="relative z-10 space-y-6">
+          <!-- Top Row: Bank Info and Masked Account -->
+          <div class="flex justify-between items-start">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center shadow-inner">
+                <i class="fa-solid fa-university text-white text-sm"></i>
+              </div>
+              <div>
+                <p class="text-white font-bold text-sm leading-tight">BankProX Federal Trust</p>
+                <p class="text-white/70 text-xs">Primary Checking Account</p>
+              </div>
+            </div>
+
+            <div class="bg-white/10 backdrop-blur-md rounded-xl px-3.5 py-1.5 border border-white/10 text-right">
+              <p class="text-white/70 text-xxs uppercase tracking-wider">Account Number</p>
+              <p class="text-white font-mono text-xs font-bold">
+                •••• {{ getMaskedAccountNumber() }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Middle Row: Holder, Balances & Crypto -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <!-- Account Status & Holder -->
+            <div>
+              <p class="text-white/70 text-xs mb-1">Account Beneficiary</p>
+              <p class="text-white font-bold text-base leading-tight mb-2">
+                {{ dashboardData.user.name }}
+              </p>
+              <div class="space-y-1">
+                <div class="flex items-center space-x-1.5">
+                  <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span class="text-white/80 text-xs font-medium">Account Active</span>
+                </div>
+                <div class="flex items-center space-x-1.5">
+                  <i class="fa-solid fa-shield-check text-green-300 text-xs"></i>
+                  <span class="text-white/80 text-xs font-medium">Verified & Secured</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fiat Balance Display -->
+            <div class="text-center sm:text-left sm:border-l sm:border-white/10 sm:pl-4">
+              <p class="text-white/70 text-xs mb-1">Available Fiat Balance</p>
+              <div class="flex items-center space-x-2">
+                <p class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                  <span *ngIf="balanceVisible">${{ dashboardData.user.account_bal | number:'1.2-2' }}</span>
+                  <span *ngIf="!balanceVisible">$••••••••</span>
+                </p>
+                <button (click)="toggleBalance()" class="text-white/60 hover:text-white p-1 transition-colors" title="Toggle Balance Privacy">
+                  <i *ngIf="balanceVisible" class="fa-solid fa-eye-slash text-xs"></i>
+                  <i *ngIf="!balanceVisible" class="fa-solid fa-eye text-xs"></i>
+                </button>
+              </div>
+              <p class="text-white/60 text-xxs mt-1">USD Settlement Currency</p>
+            </div>
+
+            <!-- Bitcoin Balance Display -->
+            <div class="text-center sm:text-left sm:border-l sm:border-white/10 sm:pl-4">
+              <p class="text-white/70 text-xs mb-1">Bitcoin Digital Asset</p>
+              <div>
+                <p class="text-lg font-bold font-mono">
+                  <span *ngIf="balanceVisible">0.450000 BTC</span>
+                  <span *ngIf="!balanceVisible">••••••• BTC</span>
+                </p>
+                <p class="text-white/70 text-xs mt-0.5" *ngIf="balanceVisible">
+                  ≈ ${{ ((dashboardData.user.account_bal || 0) * 0.25) | number:'1.2-2' }}
+                </p>
+              </div>
+              <div class="flex items-center space-x-1 mt-1">
+                <div class="w-1.5 h-1.5 bg-orange-400 rounded-full"></div>
+                <span class="text-white/60 text-xxs">1 BTC = $65,400.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Portfolio Value & Buttons -->
+          <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2 border border-white/10">
+              <p class="text-white/70 text-xxs uppercase tracking-wider">Total Combined Portfolio</p>
+              <p class="text-white text-lg font-bold">
+                <span *ngIf="balanceVisible">${{ (dashboardData.user.account_bal || 0) + (dashboardData.user.roi || 0) | number:'1.2-2' }}</span>
+                <span *ngIf="!balanceVisible">$••••••••</span>
+              </p>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <a routerLink="/user/transfers" class="flex-1 sm:flex-initial inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-md text-white text-sm font-semibold transition-all">
+                <i class="fa-solid fa-paper-plane mr-2 text-xs"></i> Send Money
+              </a>
+              <a routerLink="/user/deposits" class="flex-1 sm:flex-initial inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-white text-primary-600 hover:bg-gray-100 text-sm font-bold shadow-lg transition-all">
+                <i class="fa-solid fa-plus mr-2 text-xs"></i> Add Money
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Grid -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/60">
+        <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+          Quick Actions & Operations
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <a routerLink="/user/transfers" class="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+            <div class="w-12 h-12 bg-blue-500/10 text-blue-500 rounded-2xl flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all">
+              <i class="fa-solid fa-exchange-alt text-base"></i>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Wire Transfer</span>
+          </a>
+
+          <a routerLink="/user/transfers" class="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+            <div class="w-12 h-12 bg-green-500/10 text-green-500 rounded-2xl flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-green-500 group-hover:text-white transition-all">
+              <i class="fa-solid fa-file-invoice text-base"></i>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Pay Bills</span>
+          </a>
+
+          <a routerLink="/user/grants" class="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+            <div class="w-12 h-12 bg-purple-500/10 text-purple-500 rounded-2xl flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all">
+              <i class="fa-solid fa-hand-holding-dollar text-base"></i>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Apply Grant</span>
+          </a>
+
+          <button (click)="openBankDetails()" class="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+            <div class="w-12 h-12 bg-primary-500/10 text-primary-500 rounded-2xl flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-primary-500 group-hover:text-white transition-all">
+              <i class="fa-solid fa-building-columns text-base"></i>
+            </div>
+            <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Bank Details</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Transfer Contacts Carousel -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/60">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+            Quick Transfer Contacts
+          </h3>
+          <a routerLink="/user/transfers" class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline">
+            Manage Beneficiaries <i class="fa-solid fa-chevron-right ml-1 text-xxs"></i>
+          </a>
+        </div>
+
+        <div class="flex items-center space-x-4 overflow-x-auto pb-2 custom-scrollbar">
+          <!-- Add New Button -->
+          <a routerLink="/user/transfers" class="flex-shrink-0 flex flex-col items-center group">
+            <div class="w-14 h-14 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center mb-1.5 group-hover:border-primary-500 group-hover:bg-primary-50 dark:group-hover:bg-primary-950/30 transition-all">
+              <i class="fa-solid fa-plus text-gray-400 group-hover:text-primary-500 text-sm"></i>
+            </div>
+            <span class="text-xxs font-medium text-gray-500 dark:text-gray-400">Add New</span>
+          </a>
+
+          <!-- Beneficiary Chips -->
+          <div *ngFor="let b of beneficiaries" class="flex-shrink-0 flex flex-col items-center group cursor-pointer" routerLink="/user/transfers">
+            <div class="relative w-14 h-14 rounded-2xl {{ b.color }} text-white font-bold flex items-center justify-center shadow-md mb-1.5 group-hover:scale-105 transition-transform">
+              {{ b.initials }}
+              <div *ngIf="b.is_favorite" class="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 text-gray-900 rounded-full flex items-center justify-center text-xxs">
+                <i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+            <span class="text-xxs font-medium text-gray-700 dark:text-gray-300 max-w-16 truncate text-center">
+              {{ b.name }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column (Recent Transactions & Stats) -->
+    <div class="space-y-6">
+      <!-- Recent Transactions Widget -->
+      <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/60">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">
+            Recent Activity
+          </h3>
+          <a routerLink="/user/transactions" class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline">
+            View All
+          </a>
+        </div>
+
+        <div class="space-y-3">
+          <div *ngFor="let tx of dashboardData.transactions" class="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" [class.bg-green-100]="tx.type === 'Credit' || tx.type === 'Fund Transfer'" [class.text-green-600]="tx.type === 'Credit' || tx.type === 'Fund Transfer'" [class.bg-red-100]="tx.type === 'Debit'" [class.text-red-600]="tx.type === 'Debit'">
+                <i class="fa-solid" [class.fa-arrow-down-left]="tx.type === 'Credit' || tx.type === 'Fund Transfer'" [class.fa-arrow-up-right]="tx.type === 'Debit'"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-gray-900 dark:text-white">{{ tx.plan || 'Transfer Settlement' }}</p>
+                <p class="text-xxs text-gray-400">{{ tx.created_at | date:'short' }}</p>
+              </div>
+            </div>
+            <span class="text-xs font-bold" [class.text-green-600]="tx.type === 'Credit' || tx.type === 'Fund Transfer'" [class.text-red-600]="tx.type === 'Debit'">
+              {{ (tx.type === 'Credit' || tx.type === 'Fund Transfer') ? '+' : '-' }}${{ tx.amount | number:'1.2-2' }}
+            </span>
+          </div>
+
+          <div *ngIf="dashboardData.transactions.length === 0" class="text-center py-8">
+            <i class="fa-solid fa-receipt text-gray-300 dark:text-gray-600 text-3xl mb-2"></i>
+            <p class="text-xs text-gray-500 dark:text-gray-400">No recent transactions recorded</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Virtual Card Mini Widget -->
+      <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+        <div class="flex items-center justify-between mb-6">
+          <span class="text-xxs font-bold uppercase tracking-wider text-white/60">Digital Debit</span>
+          <i class="fab fa-cc-visa text-2xl text-white"></i>
+        </div>
+
+        <div class="mb-6">
+          <i class="fa-solid fa-microchip text-2xl text-yellow-400 mb-3"></i>
+          <p class="font-mono text-base font-bold tracking-widest text-white/90">
+            4128 •••• •••• {{ getMaskedAccountNumber() }}
+          </p>
+        </div>
+
+        <div class="flex items-end justify-between text-xs text-white/70">
+          <div>
+            <p class="text-xxs uppercase tracking-wider text-white/50">Card Holder</p>
+            <p class="font-bold text-white">{{ dashboardData.user.name }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-xxs uppercase tracking-wider text-white/50">Expires</p>
+            <p class="font-bold text-white">12/28</p>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-white/10 flex justify-between items-center">
+          <span class="text-xxs font-semibold px-2 py-0.5 rounded-full bg-green-500/20 text-green-300 border border-green-500/30">
+            Active & Frozen Protection
+          </span>
+          <a routerLink="/user/cards" class="text-xs font-bold text-primary-400 hover:text-primary-300">
+            Card Controls <i class="fa-solid fa-chevron-right ml-1 text-xxs"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Concierge & Support Card -->
+      <div class="bg-gradient-to-br from-primary-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800/80 rounded-2xl p-6 border border-primary-100 dark:border-gray-700/60">
+        <div class="flex items-center space-x-3 mb-3">
+          <div class="w-10 h-10 rounded-xl bg-primary-500 text-white flex items-center justify-center shadow-md shadow-primary-500/30">
+            <i class="fa-solid fa-headset text-sm"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-gray-900 dark:text-white">24/7 VIP Concierge</h4>
+            <p class="text-xxs text-gray-500 dark:text-gray-400">Institutional Banker on duty</p>
+          </div>
+        </div>
+        <p class="text-xs text-gray-600 dark:text-gray-300 mb-4">
+          Need assistance with high-value wires, cross-border clearance, or account limits?
+        </p>
+        <a routerLink="/contact" class="inline-flex items-center justify-center w-full py-2.5 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-bold text-xs shadow-sm hover:shadow transition-all">
+          Contact Concierge Banker
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bank Credentials Modal -->
+<div *ngIf="showBankDetailsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/70 backdrop-blur-sm animate-fadeIn">
+  <div class="bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-700 relative">
+    <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700 mb-6">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-950 text-primary-600 dark:text-primary-400 flex items-center justify-center">
+          <i class="fas fa-university text-base"></i>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Bank Routing & Credentials</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Official incoming wire transfer instructions</p>
+        </div>
+      </div>
+      <button (click)="closeBankDetails()" class="p-2 text-gray-400 hover:text-gray-600 rounded-lg">
+        <i class="fas fa-times text-lg"></i>
+      </button>
+    </div>
+
+    <div class="space-y-4">
+      <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50">
+        <div>
+          <span class="text-xxs uppercase tracking-wider text-gray-400 block">Bank Name</span>
+          <span class="text-sm font-bold text-gray-900 dark:text-white">BankProX Federal Trust</span>
+        </div>
+        <button (click)="copyToClipboard('BankProX Federal Trust')" class="text-xs text-primary-600 hover:underline">
+          <i class="fa-solid fa-copy"></i>
+        </button>
+      </div>
+
+      <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50">
+        <div>
+          <span class="text-xxs uppercase tracking-wider text-gray-400 block">Beneficiary Name</span>
+          <span class="text-sm font-bold text-gray-900 dark:text-white">{{ dashboardData?.user?.name }}</span>
+        </div>
+        <button (click)="copyToClipboard(dashboardData?.user?.name)" class="text-xs text-primary-600 hover:underline">
+          <i class="fa-solid fa-copy"></i>
+        </button>
+      </div>
+
+      <div class="flex justify-between items-center p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50">
+        <div>
+          <span class="text-xxs uppercase tracking-wider text-gray-400 block">Account Number</span>
+          <span class="text-sm font-bold font-mono text-gray-900 dark:text-white">{{ dashboardData?.user?.account_number }}</span>
+        </div>
+        <button (click)="copyToClipboard(dashboardData?.user?.account_number)" class="text-xs text-primary-600 hover:underline">
+          <i class="fa-solid fa-copy"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50">
+          <span class="text-xxs uppercase tracking-wider text-gray-400 block">Routing / ABA</span>
+          <span class="text-sm font-bold font-mono text-gray-900 dark:text-white">021000021</span>
+        </div>
+        <div class="p-3 rounded-xl bg-gray-50 dark:bg-gray-700/50">
+          <span class="text-xxs uppercase tracking-wider text-gray-400 block">SWIFT / BIC</span>
+          <span class="text-sm font-bold font-mono text-gray-900 dark:text-white">BKPRUS33NYC</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="copySuccess" class="mt-4 p-2 text-center text-xs font-bold text-green-600 bg-green-50 rounded-lg animate-fadeIn">
+      <i class="fa-solid fa-check mr-1"></i> Copied to clipboard!
+    </div>
+
+    <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+      <button (click)="closeBankDetails()" class="w-full py-3 rounded-xl bg-gray-900 dark:bg-gray-700 text-white font-bold text-sm">
+        Close Instructions
+      </button>
+    </div>
+  </div>
+</div>

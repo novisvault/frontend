@@ -1,0 +1,188 @@
+<!-- Header Section -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div class="flex items-center space-x-3">
+    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary-600 to-primary-400 text-white flex items-center justify-center shadow-lg shadow-primary-500/30">
+      <i class="fa-solid fa-hand-holding-dollar text-xl"></i>
+    </div>
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+        Federal & Commercial Grants
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+        Apply for non-repayable development grants and enterprise funding with guaranteed disbursement upon board review.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Available Limit Banner -->
+<div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-gradient-to-r from-primary-600 via-primary-500 to-indigo-600 text-white shadow-xl shadow-primary-500/20 mb-8">
+  <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+  <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center space-x-2 text-primary-100 text-xs font-bold uppercase tracking-wider mb-1">
+        <i class="fa-solid fa-award"></i>
+        <span>Approved Account Grant Allowance</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight mb-2">
+        ${{ grantLimit | number:'1.2-2' }}
+      </h2>
+      <p class="text-xs sm:text-sm text-primary-100 max-w-xl">
+        Your account is pre-screened for immediate disbursement up to this limit based on institutional tier and verified standing.
+      </p>
+    </div>
+    <div *ngIf="latestStatus">
+      <span class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md text-white border border-white/30 shadow-sm">
+        <span class="w-2 h-2 rounded-full mr-2" [class.bg-yellow-300]="latestStatus === 'pending'" [class.bg-green-400]="latestStatus === 'approved'"></span>
+        Status: {{ latestStatus }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Application Form Column (2 Cols) -->
+  <div class="lg:col-span-2">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <!-- Tab Navigation -->
+      <div class="flex border-b border-gray-100 dark:border-gray-700 pb-4 mb-6 gap-3">
+        <button (click)="activeTab = 'individual'" [class.bg-primary-500]="activeTab === 'individual'" [class.text-white]="activeTab === 'individual'" [class.text-gray-500]="activeTab !== 'individual'" [class.dark:text-gray-400]="activeTab !== 'individual'" [class.hover:bg-gray-100]="activeTab !== 'individual'" [class.dark:hover:bg-gray-700]="activeTab !== 'individual'" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center">
+          <i class="fa-solid fa-user mr-2"></i> Individual Grant
+        </button>
+        <button (click)="activeTab = 'company'" [class.bg-primary-500]="activeTab === 'company'" [class.text-white]="activeTab === 'company'" [class.text-gray-500]="activeTab !== 'company'" [class.dark:text-gray-400]="activeTab !== 'company'" [class.hover:bg-gray-100]="activeTab !== 'company'" [class.dark:hover:bg-gray-700]="activeTab !== 'company'" class="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 flex items-center">
+          <i class="fa-solid fa-building mr-2"></i> Corporate / Enterprise
+        </button>
+      </div>
+
+      <!-- Feedback Banner -->
+      <div *ngIf="message" class="mb-6 p-4 rounded-2xl text-xs sm:text-sm font-semibold flex items-center" [class.bg-green-50]="isSuccess" [class.text-green-700]="isSuccess" [class.dark:bg-green-950/40]="isSuccess" [class.dark:text-green-300]="isSuccess" [class.bg-red-50]="!isSuccess" [class.text-red-700]="!isSuccess" [class.dark:bg-red-950/40]="!isSuccess" [class.dark:text-red-300]="!isSuccess">
+        <i class="fa-solid mr-2 text-base" [class.fa-circle-check]="isSuccess" [class.fa-triangle-exclamation]="!isSuccess"></i>
+        <span>{{ message }}</span>
+      </div>
+
+      <!-- Individual Form -->
+      <form *ngIf="activeTab === 'individual'" (ngSubmit)="submitIndividual()" class="space-y-6">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Requested Grant Amount ($ USD) <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+            <input type="number" [(ngModel)]="indAmount" name="indAmount" class="w-full pl-9 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-base" placeholder="e.g. 25000" [max]="grantLimit" required>
+          </div>
+          <p class="text-xxs text-gray-400 mt-1">Must not exceed approved limit of ${{ grantLimit | number:'1.2-2' }}</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3">
+            Funding Allocation Purposes
+          </label>
+          <div class="space-y-2">
+            <label class="flex items-center p-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-all">
+              <input type="checkbox" [(ngModel)]="programFunding" name="programFunding" class="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+              <span class="ml-3 text-xs font-medium text-gray-700 dark:text-gray-300">Community & Educational Outreach Programs</span>
+            </label>
+            <label class="flex items-center p-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-all">
+              <input type="checkbox" [(ngModel)]="equipmentFunding" name="equipmentFunding" class="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+              <span class="ml-3 text-xs font-medium text-gray-700 dark:text-gray-300">Capital Equipment & Hardware Procurement</span>
+            </label>
+            <label class="flex items-center p-3 rounded-xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700/60 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-all">
+              <input type="checkbox" [(ngModel)]="researchFunding" name="researchFunding" class="w-4 h-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500">
+              <span class="ml-3 text-xs font-medium text-gray-700 dark:text-gray-300">Academic & Scientific Research Initiative</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Proposal Summary / Objective
+          </label>
+          <textarea [(ngModel)]="indMission" name="indMission" rows="4" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl text-xs sm:text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all" placeholder="Provide a concise description of how the funds will be utilized..."></textarea>
+        </div>
+
+        <button type="submit" [disabled]="submitting" class="w-full py-4 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-sm shadow-lg shadow-primary-500/25 transition-all flex items-center justify-center space-x-2 disabled:opacity-50">
+          <i *ngIf="submitting" class="fa-solid fa-circle-notch fa-spin"></i>
+          <span>{{ submitting ? 'Submitting Application...' : 'Submit Individual Grant Application' }}</span>
+        </button>
+      </form>
+
+      <!-- Company Form -->
+      <form *ngIf="activeTab === 'company'" (ngSubmit)="submitCompany()" class="space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              Entity Legal Name <span class="text-red-500">*</span>
+            </label>
+            <input type="text" [(ngModel)]="compName" name="compName" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm" placeholder="LLC / Inc Legal Name" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              EIN (Tax ID)
+            </label>
+            <input type="text" [(ngModel)]="compEin" name="compEin" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl font-mono text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm" placeholder="12-3456789">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Requested Corporate Grant ($ USD) <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+            <input type="number" [(ngModel)]="compAmount" name="compAmount" class="w-full pl-9 pr-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-base" placeholder="50000" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Corporate Headquarters Address
+          </label>
+          <input type="text" [(ngModel)]="compAddress" name="compAddress" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl text-xs sm:text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all" placeholder="Street, Suite, City, State, ZIP">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Business Mission & Economic Impact
+          </label>
+          <textarea [(ngModel)]="compMission" name="compMission" rows="4" class="w-full p-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl text-xs sm:text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all" placeholder="Explain your organizational objectives and projected job creation..."></textarea>
+        </div>
+
+        <button type="submit" [disabled]="submitting" class="w-full py-4 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-sm shadow-lg shadow-primary-500/25 transition-all flex items-center justify-center space-x-2 disabled:opacity-50">
+          <i *ngIf="submitting" class="fa-solid fa-circle-notch fa-spin"></i>
+          <span>{{ submitting ? 'Submitting Proposal...' : 'Submit Corporate Proposal' }}</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Past Applications List Column (1 Col) -->
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4 flex items-center">
+        <i class="fa-solid fa-clock-rotate-left text-primary-500 mr-2"></i> Application History
+      </h3>
+
+      <div class="space-y-3">
+        <div *ngFor="let app of applications" class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/60">
+          <div class="flex justify-between items-center mb-1.5">
+            <span class="text-sm font-extrabold text-gray-900 dark:text-white">
+              ${{ app.requested_amount | number:'1.2-2' }}
+            </span>
+            <span class="px-2.5 py-1 rounded-lg text-xxs font-extrabold uppercase tracking-wider" [class.bg-yellow-50]="app.status === 'pending'" [class.text-yellow-600]="app.status === 'pending'" [class.dark:bg-yellow-950/40]="app.status === 'pending'" [class.dark:text-yellow-400]="app.status === 'pending'" [class.bg-green-50]="app.status === 'approved' || app.status === 'disbursed'" [class.text-green-600]="app.status === 'approved' || app.status === 'disbursed'" [class.dark:bg-green-950/40]="app.status === 'approved' || app.status === 'disbursed'" [class.dark:text-green-400]="app.status === 'approved' || app.status === 'disbursed'" [class.bg-red-50]="app.status === 'rejected'" [class.text-red-600]="app.status === 'rejected'">
+              {{ app.status }}
+            </span>
+          </div>
+          <div class="flex items-center justify-between text-xxs text-gray-400">
+            <span>{{ app.application_type | titlecase }}</span>
+            <span>{{ app.created_at | date:'mediumDate' }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="applications.length === 0" class="text-center py-8 text-gray-400 text-xs">
+          <i class="fa-solid fa-folder-open text-2xl mb-2 opacity-50 block"></i>
+          No prior grant requests recorded.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

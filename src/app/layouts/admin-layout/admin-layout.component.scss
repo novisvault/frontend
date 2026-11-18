@@ -1,0 +1,16 @@
+.container-application {
+  min-height: 100vh;
+  display: flex;
+}
+
+.sidenav {
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f4f6f9;
+}

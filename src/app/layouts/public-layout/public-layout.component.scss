@@ -1,0 +1,15 @@
+/* Scoped styles for Public Layout */
+.mobile-fixed-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  z-index: 50;
+  display: flex;
+}
+@media (min-width: 1024px) {
+  .mobile-fixed-buttons {
+    display: none;
+  }
+}

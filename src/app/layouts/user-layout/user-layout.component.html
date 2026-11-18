@@ -1,0 +1,320 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex flex-col" (click)="closeDropdowns()">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Desktop Sidebar (Hidden on mobile) -->
+    <aside class="hidden lg:flex flex-col w-72 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-700/50 shadow-xl z-30">
+      <!-- Logo Section -->
+      <div class="p-6 border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-between">
+        <a routerLink="/user/dashboard" class="flex items-center space-x-3 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-600 to-primary-400 flex items-center justify-center shadow-lg shadow-primary-500/30 group-hover:scale-105 transition-transform">
+            <i class="fas fa-university text-white text-lg"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-xl font-black tracking-tight text-gray-900 dark:text-white">
+              BankPro<span class="text-primary-500">X</span>
+            </span>
+            <span class="text-xxs uppercase tracking-widest text-primary-600 dark:text-primary-400 font-bold">
+              Private Banking
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 px-4 py-6 space-y-6 overflow-y-auto custom-scrollbar">
+        <!-- Main Section -->
+        <div>
+          <h3 class="text-xxs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 px-4">
+            Main
+          </h3>
+          <div class="space-y-1">
+            <a routerLink="/user/dashboard" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" [routerLinkActiveOptions]="{exact: true}" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-house text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Dashboard</span>
+            </a>
+            <a routerLink="/user/transactions" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-chart-line text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Transactions</span>
+            </a>
+            <a routerLink="/user/cards" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-credit-card text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Cards</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Transfers Section -->
+        <div>
+          <h3 class="text-xxs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 px-4">
+            Transfers & Move Funds
+          </h3>
+          <div class="space-y-1">
+            <a routerLink="/user/transfers" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-paper-plane text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Send Wire / ACH</span>
+            </a>
+            <a routerLink="/user/deposits" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-plus text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Deposit Funds</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Services Section -->
+        <div>
+          <h3 class="text-xxs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 px-4">
+            Financial Services
+          </h3>
+          <div class="space-y-1">
+            <a routerLink="/user/loans" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-landmark text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Loans & Credit</span>
+            </a>
+            <a routerLink="/user/grants" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-hand-holding-dollar text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Grants & Subsidies</span>
+            </a>
+            <a routerLink="/user/irs-refund" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-receipt text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">IRS Tax Refund</span>
+            </a>
+            <a routerLink="/user/plans" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-chart-pie text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Investment Portfolios</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Account & Security Section -->
+        <div>
+          <h3 class="text-xxs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 px-4">
+            Security & Support
+          </h3>
+          <div class="space-y-1">
+            <a routerLink="/user/profile" routerLinkActive="bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/25 active" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-user-shield text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">Profile & Security</span>
+            </a>
+            <a routerLink="/contact" class="group flex items-center px-4 py-3 text-sm font-medium rounded-2xl transition-all duration-200 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-800 hover:text-primary-700 dark:hover:text-primary-400">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center mr-3 bg-gray-100 dark:bg-gray-800 group-hover:bg-primary-100 dark:group-hover:bg-gray-700 transition-colors">
+                <i class="fa-solid fa-headset text-gray-500 dark:text-gray-400 group-hover:text-primary-600"></i>
+              </div>
+              <span class="font-semibold">24/7 Concierge</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- User Profile Box -->
+      <div class="p-4 border-t border-gray-200/50 dark:border-gray-700/50">
+        <a routerLink="/user/profile" class="flex items-center space-x-3 p-3 rounded-2xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200/50 dark:border-gray-700/50 hover:border-primary-400 transition-all cursor-pointer">
+          <div class="relative">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary-500 to-primary-700 text-white font-bold flex items-center justify-center border-2 border-primary-200 dark:border-primary-800 shadow">
+              {{ getUserInitials() }}
+            </div>
+            <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-bold text-gray-900 dark:text-white truncate">
+              {{ user()?.name || 'Authorized Client' }}
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 truncate font-mono">
+              •••• {{ getMaskedAccountNumber() }}
+            </p>
+          </div>
+          <button (click)="$event.stopPropagation(); logout()" class="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-500 dark:text-red-400 transition-colors flex items-center justify-center" title="Sign Out">
+            <i class="fa-solid fa-right-from-bracket text-sm"></i>
+          </button>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Container -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <!-- Desktop Header -->
+      <header class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 px-6 py-4 shadow-sm z-20 flex items-center justify-between">
+        <!-- Mobile Drawer Toggle & Page Title -->
+        <div class="flex items-center space-x-4">
+          <button (click)="toggleSidebar()" class="lg:hidden p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-primary-500">
+            <i class="fas fa-bars text-lg"></i>
+          </button>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-primary-50 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400 border border-primary-200/50 dark:border-primary-800/50">
+                FDIC Insured Session
+              </span>
+              <span class="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline">|</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400 hidden sm:inline">
+                256-Bit TLS 1.3 Encryption Active
+              </span>
+            </div>
+            <h1 class="text-xl font-bold text-gray-900 dark:text-white mt-1">
+              Client Portal Console
+            </h1>
+          </div>
+        </div>
+
+        <!-- Right Header Actions -->
+        <div class="flex items-center space-x-3">
+          <!-- Dark Mode Toggle -->
+          <button (click)="toggleDarkMode()" class="w-10 h-10 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-gray-700 flex items-center justify-center transition-colors group" title="Toggle Theme">
+            <i *ngIf="!darkMode()" class="fa-solid fa-moon text-gray-600 group-hover:text-primary-600"></i>
+            <i *ngIf="darkMode()" class="fa-solid fa-sun text-yellow-400 group-hover:text-yellow-300"></i>
+          </button>
+
+          <!-- Notifications Dropdown -->
+          <div class="relative" (click)="$event.stopPropagation()">
+            <button (click)="toggleNotifications()" class="relative w-10 h-10 rounded-2xl bg-gray-100 dark:bg-gray-800 hover:bg-primary-50 dark:hover:bg-gray-700 flex items-center justify-center transition-colors group">
+              <i class="fa-solid fa-bell text-gray-600 dark:text-gray-300 group-hover:text-primary-600"></i>
+              <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xxs font-bold rounded-full flex items-center justify-center ring-2 ring-white dark:ring-gray-900">
+                {{ unreadNotifications.length }}
+              </span>
+            </button>
+
+            <!-- Notification Flyout -->
+            <div *ngIf="notificationsOpen" class="absolute right-0 mt-3 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200/80 dark:border-gray-700/80 overflow-hidden z-50 animate-fadeIn">
+              <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50">
+                <h3 class="font-bold text-sm text-gray-900 dark:text-white">Security & Account Alerts</h3>
+                <span class="text-xxs font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950 px-2 py-0.5 rounded-full">
+                  {{ unreadNotifications.length }} New
+                </span>
+              </div>
+              <div class="divide-y divide-gray-100 dark:divide-gray-700 max-h-80 overflow-y-auto">
+                <div *ngFor="let notif of unreadNotifications" class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-start space-x-3 cursor-pointer">
+                  <div class="w-8 h-8 rounded-xl bg-primary-50 dark:bg-primary-950/50 text-primary-600 dark:text-primary-400 flex items-center justify-center shrink-0">
+                    <i class="fa-solid {{ notif.icon }} text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ notif.title }}</p>
+                    <p class="text-xxs text-gray-400 mt-0.5">{{ notif.time }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="p-2 text-center bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700">
+                <a routerLink="/user/dashboard" (click)="notificationsOpen = false" class="text-xs font-semibold text-primary-600 dark:text-primary-400 hover:underline">
+                  Mark all as read
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Transfer CTA -->
+          <a routerLink="/user/transfers" class="hidden sm:inline-flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white text-xs font-bold shadow-md shadow-primary-500/20 hover:from-primary-600 hover:to-primary-700 transition-all">
+            <i class="fa-solid fa-paper-plane mr-2"></i> Send Money
+          </a>
+        </div>
+      </header>
+
+      <!-- Scrollable Main Content -->
+      <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-gray-50/50 dark:bg-gray-900/50">
+        <div class="max-w-7xl mx-auto">
+          <router-outlet></router-outlet>
+        </div>
+      </main>
+
+      <!-- Desktop Footer -->
+      <footer class="bg-white/50 dark:bg-gray-900/50 border-t border-gray-200/50 dark:border-gray-800 px-6 py-3 text-xs text-gray-500 dark:text-gray-400 flex flex-col sm:flex-row items-center justify-between">
+        <div>
+          &copy; 2026 BankProX Financial Corporation. Member FDIC & Equal Housing Lender.
+        </div>
+        <div class="flex items-center space-x-4 mt-1 sm:mt-0">
+          <span class="flex items-center"><i class="fas fa-lock text-green-500 mr-1.5"></i> 256-Bit SSL</span>
+          <span>Routing: 021000021</span>
+          <span>SWIFT: BKPRUS33NYC</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Overlay -->
+  <div *ngIf="sidebarOpen" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-40 lg:hidden" (click)="sidebarOpen = false"></div>
+
+  <!-- Mobile Slide-out Navigation Drawer -->
+  <div class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-gray-900 shadow-2xl z-50 transform transition-transform duration-300 lg:hidden flex flex-col" [class.translate-x-0]="sidebarOpen" [class.-translate-x-full]="!sidebarOpen">
+    <div class="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-primary-500 text-white flex items-center justify-center">
+          <i class="fas fa-university"></i>
+        </div>
+        <span class="text-xl font-bold">BankProX</span>
+      </div>
+      <button (click)="sidebarOpen = false" class="p-2 rounded-lg text-gray-400 hover:text-gray-600">
+        <i class="fas fa-times text-lg"></i>
+      </button>
+    </div>
+
+    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <a routerLink="/user/dashboard" (click)="sidebarOpen = false" class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fa-solid fa-house w-6 text-primary-500"></i> Dashboard
+      </a>
+      <a routerLink="/user/transfers" (click)="sidebarOpen = false" class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fa-solid fa-paper-plane w-6 text-primary-500"></i> Transfers & Wire
+      </a>
+      <a routerLink="/user/cards" (click)="sidebarOpen = false" class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fa-solid fa-credit-card w-6 text-primary-500"></i> Virtual Cards
+      </a>
+      <a routerLink="/user/deposits" (click)="sidebarOpen = false" class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fa-solid fa-plus w-6 text-primary-500"></i> Deposit Funds
+      </a>
+      <a routerLink="/user/grants" (click)="sidebarOpen = false" class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fa-solid fa-hand-holding-dollar w-6 text-primary-500"></i> Grants
+      </a>
+      <a routerLink="/user/irs-refund" (click)="sidebarOpen = false" class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fa-solid fa-receipt w-6 text-primary-500"></i> IRS Refund
+      </a>
+      <a routerLink="/user/plans" (click)="sidebarOpen = false" class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-800">
+        <i class="fa-solid fa-chart-line w-6 text-primary-500"></i> Investments
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-gray-200 dark:border-gray-800">
+      <button (click)="logout()" class="w-full py-2.5 rounded-xl bg-red-500/10 text-red-500 font-bold text-sm flex items-center justify-center space-x-2">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar (Matching Laravel dash2.blade.php lines 926-968) -->
+  <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200/60 dark:border-gray-800 py-1.5 px-3 flex justify-around items-center z-30 shadow-top">
+    <a routerLink="/user/transactions" routerLinkActive="text-primary-600 font-bold" class="flex flex-col items-center py-1 text-gray-500 dark:text-gray-400 hover:text-primary-500 text-xxs font-medium">
+      <i class="fa-solid fa-chart-line text-lg mb-0.5"></i>
+      <span>Activity</span>
+    </a>
+    <a routerLink="/user/transfers" routerLinkActive="text-primary-600 font-bold" class="flex flex-col items-center py-1 text-gray-500 dark:text-gray-400 hover:text-primary-500 text-xxs font-medium">
+      <i class="fa-solid fa-paper-plane text-lg mb-0.5"></i>
+      <span>Transfer</span>
+    </a>
+    <a routerLink="/user/dashboard" routerLinkActive="text-primary-600 font-bold" [routerLinkActiveOptions]="{exact: true}" class="flex flex-col items-center py-1 text-gray-500 dark:text-gray-400 hover:text-primary-500 text-xxs font-medium">
+      <i class="fa-solid fa-house text-lg mb-0.5"></i>
+      <span>Home</span>
+    </a>
+    <a routerLink="/user/cards" routerLinkActive="text-primary-600 font-bold" class="flex flex-col items-center py-1 text-gray-500 dark:text-gray-400 hover:text-primary-500 text-xxs font-medium">
+      <i class="fa-solid fa-credit-card text-lg mb-0.5"></i>
+      <span>Cards</span>
+    </a>
+    <a routerLink="/user/profile" routerLinkActive="text-primary-600 font-bold" class="flex flex-col items-center py-1 text-gray-500 dark:text-gray-400 hover:text-primary-500 text-xxs font-medium">
+      <i class="fa-solid fa-user text-lg mb-0.5"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+</div>

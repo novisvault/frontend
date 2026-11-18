@@ -1,0 +1,71 @@
+<!-- Header -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+      Requested Credit Facilities & Loans
+    </h1>
+    <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+      Underwrite and authorize institutional lines of credit, liquidity facilities, and commercial advances.
+    </p>
+  </div>
+</div>
+
+<div *ngIf="message" class="mb-4 p-3.5 rounded-2xl bg-emerald-950 border border-emerald-800 text-emerald-300 text-xs font-bold">
+  <i class="fa fa-check-circle mr-2"></i> {{ message }}
+</div>
+
+<!-- Table Matching activeinv.blade.php -->
+<div class="bg-slate-900/90 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-xs">
+      <thead class="bg-slate-950/80 text-slate-400 font-bold uppercase tracking-wider text-xxs border-b border-slate-800">
+        <tr>
+          <th class="py-4 px-5">Client Name</th>
+          <th class="py-4 px-5">Credit Facility</th>
+          <th class="py-4 px-5">Amount Requested</th>
+          <th class="py-4 px-5">Duration / Term</th>
+          <th class="py-4 px-5">Purpose</th>
+          <th class="py-4 px-5">Status</th>
+          <th class="py-4 px-5">Date Submitted</th>
+          <th class="py-4 px-5 text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800 text-slate-300">
+        <tr *ngFor="let l of loans" class="hover:bg-slate-800/40 transition-colors">
+          <td class="py-4 px-5">
+            <span class="font-bold text-white block">{{ l.user_name || 'Client' }}</span>
+            <span class="text-xxs text-slate-500">{{ l.user_email }}</span>
+          </td>
+          <td class="py-4 px-5 font-bold text-purple-400">{{ l.facility || 'Credit Facility' }}</td>
+          <td class="py-4 px-5 font-mono font-bold text-emerald-400 text-sm">
+            ${{ l.amount | number:'1.2-2' }}
+          </td>
+          <td class="py-4 px-5 text-slate-300">{{ l.duration || '12' }} Months</td>
+          <td class="py-4 px-5 text-slate-400 text-xs">{{ l.purpose || 'Commercial Liquidity' }}</td>
+          <td class="py-4 px-5">
+            <span class="px-2.5 py-0.5 rounded-full text-xxs font-bold"
+              [class.bg-emerald-950]="l.active === 'Approved'" [class.text-emerald-400]="l.active === 'Approved'"
+              [class.bg-amber-950]="l.active === 'Pending'" [class.text-amber-400]="l.active === 'Pending'"
+              [class.bg-red-950]="l.active === 'Rejected'" [class.text-red-400]="l.active === 'Rejected'">
+              {{ l.active }}
+            </span>
+          </td>
+          <td class="py-4 px-5 text-slate-500 text-xxs">
+            {{ l.created_at | date:'medium' }}
+          </td>
+          <td class="py-4 px-5 text-right space-x-1.5 whitespace-nowrap">
+            <button *ngIf="l.active !== 'Approved'" (click)="process(l.id, 'approve')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 font-bold text-xxs">
+              Approve Loan
+            </button>
+            <button *ngIf="l.active !== 'Rejected'" (click)="process(l.id, 'reject')" class="px-3.5 py-1.5 rounded-xl bg-red-600/20 text-red-400 hover:bg-red-600/30 font-bold text-xxs">
+              Decline
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="loans.length === 0 && !loading">
+          <td colspan="8" class="py-8 text-center text-slate-500 text-xs">No active or pending loan applications found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

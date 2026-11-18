@@ -1,0 +1,256 @@
+<div class="space-y-6">
+  <!-- Desktop Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+        Credit Facilities & Institutional Loans
+      </h1>
+      <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+        Access customized credit lines with favorable rates and flexible amortization schedules.
+      </p>
+    </div>
+
+    <div>
+      <button *ngIf="!showApplicationForm" [disabled]="hasActiveLoan" (click)="showApplicationForm = true" class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg shadow-primary-500/25 text-xs font-bold rounded-xl text-white transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
+        <i class="fa-solid fa-plus text-xs mr-2"></i>
+        <span>Apply for Facility</span>
+      </button>
+
+      <button *ngIf="showApplicationForm" (click)="showApplicationForm = false" class="inline-flex items-center px-4 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 text-xs font-bold rounded-xl text-gray-700 dark:text-gray-200 transition-all">
+        <i class="fa-solid fa-arrow-left text-xs mr-2"></i>
+        <span>Back to Loan Overview</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage" class="p-4 rounded-2xl bg-green-50 dark:bg-green-950/40 border border-green-200 text-green-700 dark:text-green-300 text-xs font-bold flex items-center space-x-2">
+    <i class="fa-solid fa-circle-check text-base"></i>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  <div *ngIf="errorMessage" class="p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 text-red-700 dark:text-red-300 text-xs font-bold flex items-center space-x-2">
+    <i class="fa-solid fa-circle-exclamation text-base"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Active Loan Alert Banner matching original PHP -->
+  <div *ngIf="hasActiveLoan" class="p-4 bg-yellow-50/90 dark:bg-yellow-900/50 backdrop-blur-sm border-l-4 border-yellow-400 rounded-xl shadow-sm">
+    <div class="flex items-start">
+      <div class="shrink-0 text-yellow-500 text-lg mr-3">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div>
+        <h3 class="text-xs font-bold text-yellow-800 dark:text-yellow-300 uppercase tracking-wider">
+          Loan Application Restricted
+        </h3>
+        <p class="text-xs text-yellow-700 dark:text-yellow-400 mt-1 leading-relaxed">
+          You currently have an active or pending loan facility. Additional applications are locked until your active commitment is settled in full or cleared by the compliance division.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LOAN APPLICATION FORM ================= -->
+  <div *ngIf="showApplicationForm" class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-lg border border-gray-200/50 dark:border-gray-700/50 animate-fadeIn">
+    <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+      <i class="fa-solid fa-file-contract text-primary-500 mr-2"></i>
+      Credit Facility Application Form
+    </h3>
+
+    <form (ngSubmit)="submitApplication()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Facility Type -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Facility Type <span class="text-red-500">*</span>
+          </label>
+          <select [(ngModel)]="facility" name="facility" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option *ngFor="let opt of facilityOptions" [value]="opt.name">
+              {{ opt.name }} (Est. {{ opt.rate }} APR)
+            </option>
+          </select>
+        </div>
+
+        <!-- Loan Amount -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Requested Capital ($ USD) <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400 font-bold">$</span>
+            <input type="number" [(ngModel)]="amount" name="amount" min="1000" step="500" placeholder="10,000.00" class="w-full pl-8 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required>
+          </div>
+          <span class="text-xxs text-gray-400 mt-1 block">Minimum facility: $1,000.00</span>
+        </div>
+
+        <!-- Duration -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Amortization Term (Months) <span class="text-red-500">*</span>
+          </label>
+          <select [(ngModel)]="duration" name="duration" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+            <option *ngFor="let m of durationOptions" [value]="m">
+              {{ m }} Months ({{ m / 12 }} Year{{ m > 12 ? 's' : '' }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Monthly Income -->
+        <div>
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Verified Monthly Income ($ USD) <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400 font-bold">$</span>
+            <input type="number" [(ngModel)]="income" name="income" min="500" placeholder="7,500.00" class="w-full pl-8 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-bold text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required>
+          </div>
+        </div>
+
+        <!-- Purpose -->
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2">
+            Purpose of Credit Facility <span class="text-red-500">*</span>
+          </label>
+          <input type="text" [(ngModel)]="purpose" name="purpose" placeholder="e.g. Commercial Inventory, Property Acquisition, Working Capital..." class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500" required>
+        </div>
+      </div>
+
+      <!-- Live Calculation Breakdown Card -->
+      <div *ngIf="amount && amount > 0" class="p-5 rounded-2xl bg-gradient-to-r from-primary-50 to-blue-50 dark:from-primary-950/40 dark:to-blue-950/40 border border-primary-200/50 dark:border-primary-800/40 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <span class="text-xxs uppercase tracking-wider text-gray-400 block">Est. Monthly Installment</span>
+          <span class="text-lg font-black text-primary-600 dark:text-primary-400 font-mono">
+            ${{ getEstimatedMonthlyPayment() | number:'1.2-2' }}/mo
+          </span>
+        </div>
+        <div>
+          <span class="text-xxs uppercase tracking-wider text-gray-400 block">Facility Term</span>
+          <span class="text-lg font-black text-gray-800 dark:text-gray-200">
+            {{ duration }} Months
+          </span>
+        </div>
+        <div>
+          <span class="text-xxs uppercase tracking-wider text-gray-400 block">Total Commitment</span>
+          <span class="text-lg font-black text-gray-800 dark:text-gray-200 font-mono">
+            ${{ getTotalRepayment() | number:'1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <button type="button" (click)="showApplicationForm = false" class="px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+          Cancel
+        </button>
+        <button type="submit" [disabled]="isSubmitting" class="px-6 py-3 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 text-white text-xs font-bold shadow-lg shadow-primary-500/25 flex items-center">
+          <i *ngIf="isSubmitting" class="fa-solid fa-spinner fa-spin mr-2"></i>
+          <span>Submit Credit Application</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ================= LOANS OVERVIEW & BENEFITS ================= -->
+  <div *ngIf="!showApplicationForm" class="space-y-6">
+    <!-- Why Choose Our Facility Cards (Matching original loan.blade.php lines 82-105) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-5 border border-gray-200/50 dark:border-gray-700/50 flex items-start space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-clock text-lg"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Fast Institutional Review</h4>
+          <p class="text-xxs text-gray-500 dark:text-gray-400 mt-1">
+            Automated compliance and risk underwriting completed in under 24 hours.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-5 border border-gray-200/50 dark:border-gray-700/50 flex items-start space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400 flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-percentage text-lg"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Fixed Rate Security</h4>
+          <p class="text-xxs text-gray-500 dark:text-gray-400 mt-1">
+            Predictable terms unaffected by market volatility or variable benchmark hikes.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-5 border border-gray-200/50 dark:border-gray-700/50 flex items-start space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+          <i class="fa-solid fa-shield-halved text-lg"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Flexible Amortization</h4>
+          <p class="text-xxs text-gray-500 dark:text-gray-400 mt-1">
+            Repayment terms from 6 to 60 months with zero early payoff penalty fees.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loan Applications History Table -->
+    <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-lg dark:shadow-gray-900/50 border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+      <div class="p-4 border-b border-gray-200/50 dark:border-gray-700/50 flex items-center justify-between">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white flex items-center">
+          <i class="fa-solid fa-clock-rotate-left mr-2 text-primary-500"></i>
+          Loan History & Portfolios
+        </h3>
+        <span class="text-xxs font-bold px-2 py-0.5 rounded-full bg-primary-50 dark:bg-primary-950 text-primary-600">
+          {{ loans.length }} Records
+        </span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200/50 dark:divide-gray-700/50">
+          <thead class="bg-gray-50/80 dark:bg-gray-800/80">
+            <tr>
+              <th class="px-4 py-3 text-left text-xxs font-bold text-gray-500 uppercase tracking-wider">Facility Type</th>
+              <th class="px-4 py-3 text-left text-xxs font-bold text-gray-500 uppercase tracking-wider">Principal Amount</th>
+              <th class="px-4 py-3 text-left text-xxs font-bold text-gray-500 uppercase tracking-wider">Purpose</th>
+              <th class="px-4 py-3 text-left text-xxs font-bold text-gray-500 uppercase tracking-wider">Term</th>
+              <th class="px-4 py-3 text-left text-xxs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-4 py-3 text-left text-xxs font-bold text-gray-500 uppercase tracking-wider">Submitted</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200/30 dark:divide-gray-700/30">
+            <tr *ngFor="let l of loans" class="hover:bg-primary-50/40 dark:hover:bg-primary-950/20 transition-colors">
+              <td class="px-4 py-3.5 whitespace-nowrap text-xs font-bold text-gray-900 dark:text-white">
+                {{ l.facility || 'Credit Facility' }}
+              </td>
+              <td class="px-4 py-3.5 whitespace-nowrap text-xs font-mono font-bold text-primary-600 dark:text-primary-400">
+                ${{ l.amount | number:'1.2-2' }}
+              </td>
+              <td class="px-4 py-3.5 whitespace-nowrap text-xs text-gray-600 dark:text-gray-300">
+                {{ l.purpose || 'General Financing' }}
+              </td>
+              <td class="px-4 py-3.5 whitespace-nowrap text-xs text-gray-600 dark:text-gray-300">
+                {{ l.duration || 12 }} Months
+              </td>
+              <td class="px-4 py-3.5 whitespace-nowrap">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xxs font-bold" [ngClass]="{
+                  'bg-yellow-100 text-yellow-700 dark:bg-yellow-950/40 dark:text-yellow-300': l.status === 'Pending',
+                  'bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300': l.status === 'Active' || l.status === 'Processed',
+                  'bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300': l.status === 'Declined'
+                }">
+                  {{ l.status }}
+                </span>
+              </td>
+              <td class="px-4 py-3.5 whitespace-nowrap text-xs text-gray-400">
+                {{ l.created_at | date:'mediumDate' }}
+              </td>
+            </tr>
+
+            <tr *ngIf="loans.length === 0">
+              <td colspan="6" class="px-6 py-10 text-center text-xs text-gray-400">
+                No active or past credit facilities found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

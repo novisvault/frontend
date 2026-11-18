@@ -1,0 +1,73 @@
+<!-- Header -->
+<div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+      Virtual & Physical Debit Cards
+    </h1>
+    <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+      Issue, approve, activate, and toggle cryptographic card security freezes across client portfolios.
+    </p>
+  </div>
+</div>
+
+<div *ngIf="message" class="mb-4 p-3.5 rounded-2xl bg-emerald-950 border border-emerald-800 text-emerald-300 text-xs font-bold">
+  <i class="fa fa-check-circle mr-2"></i> {{ message }}
+</div>
+
+<!-- Table Matching admin/cards/index.blade.php -->
+<div class="bg-slate-900/90 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-xs">
+      <thead class="bg-slate-950/80 text-slate-400 font-bold uppercase tracking-wider text-xxs border-b border-slate-800">
+        <tr>
+          <th class="py-4 px-5">Card Number</th>
+          <th class="py-4 px-5">Authorized User</th>
+          <th class="py-4 px-5">Card Scheme</th>
+          <th class="py-4 px-5">Tier / Level</th>
+          <th class="py-4 px-5">Card Balance</th>
+          <th class="py-4 px-5">Status</th>
+          <th class="py-4 px-5">Issued Date</th>
+          <th class="py-4 px-5 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-800 text-slate-300">
+        <tr *ngFor="let c of cards" class="hover:bg-slate-800/40 transition-colors">
+          <td class="py-4 px-5 font-mono font-bold text-sky-400 text-xs">
+            **** **** **** {{ c.card_number ? c.card_number.slice(-4) : '2019' }}
+          </td>
+          <td class="py-4 px-5">
+            <span class="font-bold text-white block">{{ c.user_name || 'Client' }}</span>
+            <span class="text-xxs text-slate-500">{{ c.user_email }}</span>
+          </td>
+          <td class="py-4 px-5 text-slate-300 font-bold uppercase">{{ c.card_type || 'Visa' }}</td>
+          <td class="py-4 px-5 text-slate-400 capitalize">{{ c.card_level || 'Platinum' }}</td>
+          <td class="py-4 px-5 font-mono font-bold text-emerald-400 text-sm">
+            ${{ c.balance || 0 | number:'1.2-2' }}
+          </td>
+          <td class="py-4 px-5">
+            <span class="px-2.5 py-0.5 rounded-full text-xxs font-bold"
+              [class.bg-emerald-950]="c.status === 'active'" [class.text-emerald-400]="c.status === 'active'"
+              [class.bg-amber-950]="c.status === 'pending'" [class.text-amber-400]="c.status === 'pending'"
+              [class.bg-red-950]="c.status === 'blocked' || c.status === 'rejected'" [class.text-red-400]="c.status === 'blocked' || c.status === 'rejected'">
+              {{ c.status | uppercase }}
+            </span>
+          </td>
+          <td class="py-4 px-5 text-slate-500 text-xxs">
+            {{ c.created_at | date:'mediumDate' }}
+          </td>
+          <td class="py-4 px-5 text-right space-x-1.5 whitespace-nowrap">
+            <button *ngIf="c.status !== 'active'" (click)="process(c.id, 'active')" class="px-3.5 py-1.5 rounded-xl bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 font-bold text-xxs">
+              Activate / Approve
+            </button>
+            <button *ngIf="c.status === 'active'" (click)="process(c.id, 'blocked')" class="px-3.5 py-1.5 rounded-xl bg-red-600/20 text-red-400 hover:bg-red-600/30 font-bold text-xxs">
+              Freeze Card
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="cards.length === 0 && !loading">
+          <td colspan="8" class="py-8 text-center text-slate-500 text-xs">No debit cards found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
